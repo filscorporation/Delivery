@@ -1,4 +1,6 @@
-﻿namespace SteelCustom.Enemies
+﻿using SteelCustom.Buildings;
+
+namespace SteelCustom.Enemies
 {
     public class Flying : EnemyUnit
     {
@@ -10,5 +12,10 @@
         public override int Damage => 2;
         public override float AttackDelay => 3;
         public override float AttackRange => 0.2f;
+
+        protected override Building GetTarget()
+        {
+            return GameController.Instance.BattleController.BuilderController.GetClosestBuilding(Transformation.Position.X, BuildingType.Wall);
+        }
     }
 }

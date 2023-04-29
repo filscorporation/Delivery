@@ -8,7 +8,7 @@ namespace SteelCustom
     {
         private bool _isAttacking = false;
 
-        private const float FLY_HEIGHT = 1f;
+        private const float FLY_HEIGHT = -0.75f;
 
         public override void OnUpdate()
         {
@@ -23,6 +23,9 @@ namespace SteelCustom
             _isAttacking = true;
 
             SpawnUnit(EnemyType.Soldier);
+            SpawnUnit(EnemyType.Tank);
+            SpawnUnit(EnemyType.Runner);
+            SpawnUnit(EnemyType.Flying);
         }
 
         private void SpawnUnit(EnemyType enemyType)
@@ -31,7 +34,7 @@ namespace SteelCustom
             unit.Init(enemyType);
 
             float y = unit.IsGround ? BuilderController.GROUND_HEIGHT : FLY_HEIGHT;
-            unit.Transformation.Position = new Vector3(6, y);
+            unit.Transformation.Position = new Vector3(6, y, 1);
         }
 
         private EnemyUnit CreateUnit(EnemyType enemyType)

@@ -173,7 +173,7 @@ namespace SteelCustom
             
             yield return new WaitWhile(() => !Player.FirstTowerOrdered);
             
-            //UIController.CreateBuildUI();
+            UIController.EnableDeliveryQueue();
 
             Log.LogInfo("End OrderFirstTower state");
             _changeState = true;
@@ -201,7 +201,7 @@ namespace SteelCustom
             yield return new WaitForSeconds(0.1f);
             
             //Entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("end_game.wav"));
-            UIController.Menu.OpenOnLoseScreen();
+            //UIController.Menu.OpenOnLoseScreen();
         }
 
         private IEnumerator WinGameCoroutine()

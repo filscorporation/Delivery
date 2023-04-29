@@ -9,7 +9,7 @@ namespace SteelCustom
     {
         public event Action OnCreditsChanged;
 
-        public int Credits { get; private set; } = 50; // TODO: remove
+        public int Credits { get; private set; } = 500; // TODO: remove
 
         public bool ResearchStationPlaced { get; set; } = false;
         public bool FirstTowerOrdered { get; set; } = false;
@@ -45,6 +45,8 @@ namespace SteelCustom
         {
             if (!CanOrderBuilding(building))
                 return false;
+            
+            FirstTowerOrdered = true;
 
             SpendCredits(building.Price);
             GameController.Instance.BattleController.BuilderController.StartPlacingBuilding(building.BuildingType);
@@ -58,7 +60,7 @@ namespace SteelCustom
                 return false;
 
             SpendCredits(effect.Price);
-            //GameController.Instance.BattleController.BuilderController.StartPlacingBuilding(building.BuildingType);
+            GameController.Instance.BattleController.BuilderController.StartPlacingEffect(effect.EffectType);
 
             return true;
         }

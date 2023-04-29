@@ -14,6 +14,8 @@ namespace SteelCustom.UIElements
         private UIImage _creditsIcon;
         private UIText _creditsText;
         private UIOrdersShop _ordersShop;
+        private UIImage _deliveryLabel;
+        private UIDeliveryController _deliveryController;
 
         public override void OnUpdate()
         {
@@ -37,11 +39,13 @@ namespace SteelCustom.UIElements
             CreateOpenOrdersShopButton();
             CreateCreditsInfo();
             CreateOrdersShop();
+            CreateDeliveryController();
         }
 
         public void Dispose()
         {
             GameController.Instance.Player.OnCreditsChanged -= OnCreditsChanged;
+            _deliveryController?.Dispose();
         }
 
         public void EnableOpenOrdersShopButton()
@@ -52,6 +56,18 @@ namespace SteelCustom.UIElements
         public void DisableOpenOrdersShopButton()
         {
             _openOrdersButton.Entity.IsActiveSelf = false;
+        }
+
+        public void EnableDeliveryQueue()
+        {
+            _deliveryController.Entity.IsActiveSelf = true;
+            _deliveryLabel.Entity.IsActiveSelf = true;
+        }
+
+        public void DisableDeliveryQueue()
+        {
+            _deliveryController.Entity.IsActiveSelf = false;
+            _deliveryLabel.Entity.IsActiveSelf = false;
         }
 
         private void UpdateInGameUI()
@@ -111,13 +127,36 @@ namespace SteelCustom.UIElements
 
             GameController.Instance.Player.OnCreditsChanged += OnCreditsChanged;
         }
+        
+        private void CreateDeliveryController()
+        {
+            _deliveryLabel = UI.CreateUIImage(ResourcesManager.GetImage("ui_delivery_label.aseprite"), "DeliveryLabel", UIRoot);
+            _deliveryLabel.RectTransform.AnchorMin = new Vector2(0.0f, 1.0f);
+            _deliveryLabel.RectTransform.AnchorMax = new Vector2(0.0f, 1.0f);
+            _deliveryLabel.RectTransform.Size = new Vector2(67 * K, 21 * K);
+            _deliveryLabel.RectTransform.Pivot = new Vector2(0.0f, 1.0f);
+            _deliveryLabel.RectTransform.AnchoredPosition = new Vector2(1 * K, -1 * K);
+            _deliveryLabel.Entity.IsActiveSelf = false;
+            
+            Entity uiEntity = UI.CreateUIElement("DeliveryController", UIRoot);
+            _deliveryController = uiEntity.AddComponent<UIDeliveryController>();
+            RectTransformation rt = uiEntity.GetComponent<RectTransformation>();
+            rt.AnchorMin = new Vector2(0.0f, 1.0f);
+            rt.AnchorMax = new Vector2(0.0f, 1.0f);
+            rt.Size = new Vector2(38 * K, 159 * K);
+            rt.Pivot = new Vector2(0.0f, 1.0f);
+            rt.AnchoredPosition = new Vector2(1 * K, -21 * K - 2 * K);
+            uiEntity.IsActiveSelf = false;
+
+            _deliveryController.Init();
+        }
 
         private void OnCreditsChanged()
         {
             _ordersShop.UpdateState();
         }
 
-        private void OpenOrdersShop()
+        public void OpenOrdersShop()
         {
             DisableOpenOrdersShopButton();
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Steel;
 using SteelCustom.Buildings;
+using SteelCustom.Effects;
 
 namespace SteelCustom
 {
@@ -38,6 +39,11 @@ namespace SteelCustom
             UpdateDraft();
         }
 
+        public void StartPlacingEffect(EffectType effectType)
+        {
+            // TODO:
+        }
+
         public void ClearDraft()
         {
             if (DraftBuilding == null)
@@ -65,13 +71,20 @@ namespace SteelCustom
             BuildingsChanged();
         }
 
-        public Building GetClosestBuilding(float x)
+        public List<Building> GetBuildings()
+        {
+            return new List<Building>(_sortedBuildingsCache);
+        }
+
+        public Building GetClosestBuilding(float x, BuildingType? ignoreType = null)
         {
             if (!_sortedBuildingsCache.Any())
                 return null;
 
             for (int i = _sortedBuildingsCache.Count - 1; i >= 0; i--)
             {
+                if (ignoreType.HasValue && _sortedBuildingsCache[i].BuildingType == ignoreType.Value)
+                    continue;
                 if (_sortedBuildingsCache[i].Transformation.Position.X < x)
                     return _sortedBuildingsCache[i];
             }
@@ -79,10 +92,22 @@ namespace SteelCustom
             return null;
         }
 
+        public void PlaceBuilding(BuildingType buildingType, Vector2 position)
+        {
+            Building building = CreateBuilding(buildingType);
+            building.Init();
+            building.Transformation.Position = new Vector3(position.X, position.Y, 0.5f);
+            building.Place();
+            
+            _sortedBuildingsCache.Add(building);
+            
+            BuildingsChanged();
+        }
+
         private void UpdateDraft()
         {
             Vector2 position = Camera.Main.ScreenToWorldPoint(Input.MousePosition).SetY(GROUND_HEIGHT);
-            DraftBuilding.Transformation.Position = position;
+            DraftBuilding.Transformation.Position = new Vector3(position.X, position.Y, 0.5f);;
 
             bool checkDraft = CheckDraft();
             DraftBuilding.SetDraftState(checkDraft);
@@ -114,14 +139,9 @@ namespace SteelCustom
 
         private void PlaceDraft()
         {
-            // TODO: order
+            GameController.Instance.DeliveryController.AddItem(DraftBuilding, DraftBuilding.Transformation.Position);
             
-            DraftBuilding.Place();
-            _sortedBuildingsCache.Add(DraftBuilding);
-            
-            DraftBuilding = null;
-            
-            BuildingsChanged();
+            ClearDraft();
         }
 
         private void BuildingsChanged()

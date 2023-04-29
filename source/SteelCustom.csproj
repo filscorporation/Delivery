@@ -44,6 +44,7 @@
     <Compile Include="BattleController.cs" />
     <Compile Include="BuilderController.cs" />
     <Compile Include="Buildings\Building.cs" />
+    <Compile Include="Buildings\BuildingDeliveryItem.cs" />
     <Compile Include="Buildings\BuildingType.cs" />
     <Compile Include="Buildings\CreditsMiner.cs" />
     <Compile Include="Buildings\MineThrower.cs" />
@@ -73,7 +74,7 @@
     <Compile Include="MotherShip.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="UIElements\UIController.cs" />
-    <Compile Include="UIElements\UIDeliveryQueue.cs" />
+    <Compile Include="UIElements\UIDeliveryController.cs" />
     <Compile Include="UIElements\UIDeliveryQueueItem.cs" />
     <Compile Include="UIElements\UIMenu.cs" />
     <Compile Include="UIElements\UIOrdersShop.cs" />

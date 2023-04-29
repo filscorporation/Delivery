@@ -31,6 +31,16 @@ namespace SteelCustom.Enemies
             UpdateAttack();
         }
 
+        public override void OnCreate()
+        {
+            GameController.Instance.BattleController.BuilderController.OnBuildingsChanged += OnBuildingsChanged;
+        }
+
+        public override void OnDestroy()
+        {
+            GameController.Instance.BattleController.BuilderController.OnBuildingsChanged -= OnBuildingsChanged;
+        }
+
         public void Init(EnemyType enemyType)
         {
             EnemyType = enemyType;
@@ -60,7 +70,7 @@ namespace SteelCustom.Enemies
         private void UpdateAttack()
         {
             if (_target == null || _target.Entity.IsDestroyed())
-                _target = GameController.Instance.BattleController.BuilderController.GetClosestBuilding(Transformation.Position.X);
+                _target = GetTarget();
             
             if (_target == null)
                 return;
@@ -98,6 +108,16 @@ namespace SteelCustom.Enemies
         private void Move()
         {
             Transformation.Position -= new Vector3(Speed * Time.DeltaTime, 0);
+        }
+
+        private void OnBuildingsChanged()
+        {
+            _target = GetTarget();
+        }
+
+        protected virtual Building GetTarget()
+        {
+            return GameController.Instance.BattleController.BuilderController.GetClosestBuilding(Transformation.Position.X);
         }
 
         private static string EnemyTypeToSpritePath(EnemyType buildingType)

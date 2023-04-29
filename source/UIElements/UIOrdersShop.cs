@@ -53,6 +53,7 @@ namespace SteelCustom.UIElements
                 icon.RectTransform.Pivot = new Vector2(0, 0);
                 icon.RectTransform.Size = new Vector2(12 * K, 12 * K);
                 icon.RectTransform.AnchoredPosition = new Vector2(1 * K, 1 * K - icon.RectTransform.Size.Y * 0.5f);
+                icon.ConsumeEvents = false;
                 
                 UIText text = UI.CreateUIText(building.Description, "ShopItemIcon", itemButton.Entity);
                 text.RectTransform.AnchorMin = new Vector2(0, 0);
@@ -92,6 +93,7 @@ namespace SteelCustom.UIElements
                 icon.RectTransform.Pivot = new Vector2(0, 0);
                 icon.RectTransform.Size = new Vector2(12 * K, 12 * K);
                 icon.RectTransform.AnchoredPosition = new Vector2(1 * K, 1 * K);
+                icon.ConsumeEvents = false;
                 
                 UIText text = UI.CreateUIText(effect.Description, "ShopItemIcon", itemButton.Entity);
                 text.RectTransform.AnchorMin = new Vector2(0, 0);

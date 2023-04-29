@@ -41,6 +41,11 @@ namespace SteelCustom.Buildings
             
         }
 
+        public void Repair()
+        {
+            Health = MaxHealth;
+        }
+
         public void TakeDamage(EnemyUnit attacker, int damage)
         {
             Health = Math.Max(0, Health - damage);
