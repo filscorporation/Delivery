@@ -39,9 +39,9 @@ namespace SteelCustom.Enemies
             Sprite sprite = ResourcesManager.GetImage(EnemyTypeToSpritePath(EnemyType));
             sprite.Pivot = new Vector2(0.5f, 0.0f);
             Entity.AddComponent<SpriteRenderer>().Sprite = sprite;
-            Entity.AddComponent<BoxCollider>().Size = ColliderSize;
+            /*Entity.AddComponent<BoxCollider>().Size = ColliderSize;
             var rb = Entity.AddComponent<RigidBody>();
-            rb.RigidBodyType = RigidBodyType.Static;
+            rb.RigidBodyType = RigidBodyType.Static;*/
         }
 
         public void TakeDamage(int damage)

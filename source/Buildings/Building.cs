@@ -7,8 +7,8 @@ namespace SteelCustom.Buildings
     public abstract class Building : ScriptComponent
     {
         public bool IsPlaced { get; private set; } = false;
-        public BuildingType BuildingType { get; private set; }
-        protected virtual Vector2 ColliderSize => new Vector2(0.3f, 0.3f);
+        public abstract BuildingType BuildingType { get; }
+        public virtual Vector2 ColliderSize => new Vector2(0.2125f, 0.2f);
         
         public int Health { get; protected set; }
         public abstract int MaxHealth { get; }
@@ -18,9 +18,8 @@ namespace SteelCustom.Buildings
         public abstract string Name { get; }
         public abstract string Description { get; }
 
-        public void Init(BuildingType buildingType)
+        public void Init()
         {
-            BuildingType = buildingType;
             Health = MaxHealth;
 
             Sprite sprite = ResourcesManager.GetImage(SpritePath);

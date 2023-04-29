@@ -34,7 +34,7 @@ namespace SteelCustom
             ClearDraft();
 
             DraftBuilding = CreateBuilding(buildingType);
-            DraftBuilding.Init(buildingType);
+            DraftBuilding.Init();
             UpdateDraft();
         }
 
@@ -87,7 +87,7 @@ namespace SteelCustom
             bool checkDraft = CheckDraft();
             DraftBuilding.SetDraftState(checkDraft);
 
-            if (Input.IsMouseJustPressed(MouseCodes.ButtonLeft))
+            if (!UI.IsPointerOverUI() && Input.IsMouseJustPressed(MouseCodes.ButtonLeft))
             {
                 if (checkDraft)
                     PlaceDraft();
@@ -102,12 +102,20 @@ namespace SteelCustom
                 if (x < _placingPosition - _placingRange || x > _placingPosition + _placingRange)
                     return false;
             }
+
+            foreach (Entity collidedEntity in Physics.AABBCast(DraftBuilding.Transformation.Position, DraftBuilding.ColliderSize))
+            {
+                if (!collidedEntity.Equals(DraftBuilding.Entity))
+                    return false;
+            }
             
             return true;
         }
 
         private void PlaceDraft()
         {
+            // TODO: order
+            
             DraftBuilding.Place();
             _sortedBuildingsCache.Add(DraftBuilding);
             

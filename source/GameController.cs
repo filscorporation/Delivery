@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Linq;
 using Steel;
-using SteelCustom.UI;
+using SteelCustom.UIElements;
 
 namespace SteelCustom
 {
@@ -12,6 +12,7 @@ namespace SteelCustom
         
         public const float DEFAULT_VOLUME = 0.15f;
         public static bool SoundOn { get; set; } = true;
+        public const float MAP_SIZE = 320;
 
         public Player Player { get; private set; }
         public UIController UIController { get; private set; }
@@ -34,7 +35,7 @@ namespace SteelCustom
             Screen.Width = 1600;
             Screen.Height = 900;
             Camera.Main.ResizingMode = CameraResizingMode.KeepWidth;
-            Camera.Main.Width = 10;
+            Camera.Main.Width = MAP_SIZE / 32;
 
             StartCoroutine(IntroCoroutine());
         }
@@ -79,11 +80,13 @@ namespace SteelCustom
 
         public void RestartGame()
         {
+            Dispose();
             SceneManager.SetActiveScene(SceneManager.GetActiveScene());
         }
 
         public void ExitGame()
         {
+            Dispose();
             Application.Quit();
         }
 
@@ -97,6 +100,11 @@ namespace SteelCustom
         {
             _loseGame = true;
             _changeState = true;
+        }
+
+        private void Dispose()
+        {
+            UIController?.Dispose();
         }
 
         private IEnumerator IntroCoroutine()
@@ -124,10 +132,11 @@ namespace SteelCustom
             DeliveryController = new Entity("DeliveryController").AddComponent<DeliveryController>();
 
             new Entity("Environment").AddComponent<Environment>().Init();
-            BattleController.Init();
-            UIController.CreateGameUI();
             
-            yield return new WaitForSeconds(0.1f);
+            BattleController.Init();
+            DeliveryController.Init();
+
+            yield return DialogController.ShowIntroDialog();
 
             Log.LogInfo("End Intro state");
             _changeState = true;
@@ -138,7 +147,10 @@ namespace SteelCustom
             GameState = GameState.PlaceResearchStation;
             Log.LogInfo("Start PlaceResearchStation state");
             
+            UIController.CreateGameUI();
             BattleController.PlaceResearchStation();
+
+            yield return DialogController.ShowPlaceResearchStationDialog();
             
             yield return new WaitWhile(() => !Player.ResearchStationPlaced);
             
@@ -155,11 +167,11 @@ namespace SteelCustom
             GameState = GameState.OrderFirstTower;
             Log.LogInfo("Start OrderFirstTower state");
             
-            //Builder.StartPlaceBuilding(BuildingType.Ranch);
+            DeliveryController.OpenForFirstOrder();
+
+            yield return DialogController.ShowOrderFirstTowerDialog();
             
-            //yield return new WaitWhile(() => !Player.FirstTowerOrdered);
-            
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitWhile(() => !Player.FirstTowerOrdered);
             
             //UIController.CreateBuildUI();
 
@@ -172,6 +184,8 @@ namespace SteelCustom
             GameState = GameState.Battle;
             Log.LogInfo("Start Battle state");
 
+            yield return DialogController.ShowBeforeBattleDialog();
+
             BattleController.StartBattle();
             
             yield return new WaitForSeconds(1.0f);
@@ -181,6 +195,8 @@ namespace SteelCustom
         {
             GameState = GameState.Lose;
             Log.LogInfo("Start Lose state");
+
+            yield return DialogController.ShowLoseDialog();
             
             yield return new WaitForSeconds(0.1f);
             
@@ -192,6 +208,8 @@ namespace SteelCustom
         {
             GameState = GameState.Win;
             Log.LogInfo("Start Win state");
+
+            yield return DialogController.ShowWinDialog();
             
             yield return new WaitForSeconds(0.1f);
             

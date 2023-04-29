@@ -55,6 +55,11 @@
     <Compile Include="DeliveryController.cs" />
     <Compile Include="DeliveryItem.cs" />
     <Compile Include="DialogController.cs" />
+    <Compile Include="Effects\Effect.cs" />
+    <Compile Include="Effects\EffectType.cs" />
+    <Compile Include="Effects\Laser.cs" />
+    <Compile Include="Effects\Repair.cs" />
+    <Compile Include="Effects\Rocket.cs" />
     <Compile Include="Enemies\EnemyUnit.cs" />
     <Compile Include="Enemies\Flying.cs" />
     <Compile Include="Enemies\Runner.cs" />
@@ -67,8 +72,11 @@
     <Compile Include="GameState.cs" />
     <Compile Include="MotherShip.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="UI\UIController.cs" />
-    <Compile Include="UI\UIMenu.cs" />
+    <Compile Include="UIElements\UIController.cs" />
+    <Compile Include="UIElements\UIDeliveryQueue.cs" />
+    <Compile Include="UIElements\UIDeliveryQueueItem.cs" />
+    <Compile Include="UIElements\UIMenu.cs" />
+    <Compile Include="UIElements\UIOrdersShop.cs" />
     <Compile Include="Upgrades\MotherShipUpgrade.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
