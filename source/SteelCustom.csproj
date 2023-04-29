@@ -55,8 +55,13 @@
     <Compile Include="DeliveryController.cs" />
     <Compile Include="DeliveryItem.cs" />
     <Compile Include="DialogController.cs" />
+    <Compile Include="Enemies\EnemyUnit.cs" />
+    <Compile Include="Enemies\Flying.cs" />
+    <Compile Include="Enemies\Runner.cs" />
+    <Compile Include="Enemies\Soldier.cs" />
+    <Compile Include="Enemies\Tank.cs" />
     <Compile Include="EnemyController.cs" />
-    <Compile Include="EnemyUnit.cs" />
+    <Compile Include="EnemyType.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="GameController.cs" />
     <Compile Include="GameState.cs" />

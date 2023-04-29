@@ -27,6 +27,7 @@ namespace SteelCustom
         public void StartBattle()
         {
             EnemyController = new Entity("EnemyController").AddComponent<EnemyController>();
+            EnemyController.Init();
         }
     }
 }

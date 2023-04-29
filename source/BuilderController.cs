@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Steel;
 using SteelCustom.Buildings;
 
@@ -6,14 +8,18 @@ namespace SteelCustom
 {
     public class BuilderController : ScriptComponent
     {
+        public event Action OnBuildingsChanged;
+        
         public Building DraftBuilding { get; private set; }
         public bool IsInBuildMode => DraftBuilding != null;
 
-        public const float GROUND_HEIGHT = -0.75f;
+        public const float GROUND_HEIGHT = -1.25f;
 
         private bool _placingConstraints;
         private float _placingPosition;
         private float _placingRange;
+
+        private List<Building> _sortedBuildingsCache = new List<Building>();
 
         public override void OnUpdate()
         {
@@ -53,6 +59,26 @@ namespace SteelCustom
             _placingConstraints = false;
         }
 
+        public void OnBuildingDestroyed(Building building)
+        {
+            _sortedBuildingsCache.Remove(building);
+            BuildingsChanged();
+        }
+
+        public Building GetClosestBuilding(float x)
+        {
+            if (!_sortedBuildingsCache.Any())
+                return null;
+
+            for (int i = _sortedBuildingsCache.Count - 1; i >= 0; i--)
+            {
+                if (_sortedBuildingsCache[i].Transformation.Position.X < x)
+                    return _sortedBuildingsCache[i];
+            }
+
+            return null;
+        }
+
         private void UpdateDraft()
         {
             Vector2 position = Camera.Main.ScreenToWorldPoint(Input.MousePosition).SetY(GROUND_HEIGHT);
@@ -83,7 +109,17 @@ namespace SteelCustom
         private void PlaceDraft()
         {
             DraftBuilding.Place();
+            _sortedBuildingsCache.Add(DraftBuilding);
+            
             DraftBuilding = null;
+            
+            BuildingsChanged();
+        }
+
+        private void BuildingsChanged()
+        {
+            _sortedBuildingsCache = _sortedBuildingsCache.OrderBy(b => b.Transformation.Position.X).ToList();
+            OnBuildingsChanged?.Invoke();
         }
 
         private Building CreateBuilding(BuildingType buildingType)
