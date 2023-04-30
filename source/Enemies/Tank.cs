@@ -2,6 +2,7 @@
 {
     public class Tank : EnemyUnit
     {
+        public override string SpritePath => "tank.aseprite";
         public override int MaxHealth => 30;
         public override float Speed => 0.1f;
         public override int Reward => 20;

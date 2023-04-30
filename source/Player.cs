@@ -45,8 +45,6 @@ namespace SteelCustom
         {
             if (!CanOrderBuilding(building))
                 return false;
-            
-            FirstTowerOrdered = true;
 
             SpendCredits(building.Price);
             GameController.Instance.BattleController.BuilderController.StartPlacingBuilding(building.BuildingType);

@@ -28,6 +28,9 @@ namespace SteelCustom
 
         public void AddItem(Building building, Vector2 position)
         {
+            if (GameController.Instance.Player.ResearchStationPlaced)
+                GameController.Instance.Player.FirstTowerOrdered = true;
+            
             var item = new DeliveryItem { BuildingType = building.BuildingType, BuildingPosition = position, TimeLeft = building.DeliveryTime, SpritePath = building.SpritePath };
             _deliveryQueue.AddLast(item);
             

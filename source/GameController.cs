@@ -184,9 +184,9 @@ namespace SteelCustom
             GameState = GameState.Battle;
             Log.LogInfo("Start Battle state");
 
-            yield return DialogController.ShowBeforeBattleDialog();
-
             BattleController.StartBattle();
+
+            yield return DialogController.ShowBeforeBattleDialog();
             
             yield return new WaitForSeconds(1.0f);
         }
@@ -196,6 +196,9 @@ namespace SteelCustom
             GameState = GameState.Lose;
             Log.LogInfo("Start Lose state");
 
+            UIController.CloseOrdersShop();
+            UIController.DisableOpenOrdersShopButton();
+            
             yield return DialogController.ShowLoseDialog();
             
             yield return new WaitForSeconds(0.1f);
@@ -208,6 +211,9 @@ namespace SteelCustom
         {
             GameState = GameState.Win;
             Log.LogInfo("Start Win state");
+
+            UIController.CloseOrdersShop();
+            UIController.DisableOpenOrdersShopButton();
 
             yield return DialogController.ShowWinDialog();
             

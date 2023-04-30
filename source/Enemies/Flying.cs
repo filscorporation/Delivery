@@ -4,6 +4,7 @@ namespace SteelCustom.Enemies
 {
     public class Flying : EnemyUnit
     {
+        public override string SpritePath => "flying.aseprite";
         public override bool IsGround => false;
         
         public override int MaxHealth => 10;

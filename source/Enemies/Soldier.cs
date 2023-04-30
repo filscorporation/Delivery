@@ -2,6 +2,7 @@
 {
     public class Soldier : EnemyUnit
     {
+        public override string SpritePath => "soldier.aseprite";
         public override int MaxHealth => 5;
         public override float Speed => 0.4f;
         public override int Reward => 5;
