@@ -6,15 +6,22 @@ namespace SteelCustom.UIElements
     public class UIDeliveryController : ScriptComponent
     {
         private readonly List<UIDeliveryQueueItem> _queueItems = new List<UIDeliveryQueueItem>();
+        private bool _initialized = false;
 
         public void Init()
         {
+            _initialized = true;
+            
             GameController.Instance.DeliveryController.OnItemAdded += OnDeliveryItemAdded;
             GameController.Instance.DeliveryController.OnItemRemoved += OnDeliveryItemRemoved;
         }
 
-        public void Dispose()
+        public override void OnDestroy()
         {
+            if (!_initialized)
+                return;
+            _initialized = false;
+            
             GameController.Instance.DeliveryController.OnItemAdded -= OnDeliveryItemAdded;
             GameController.Instance.DeliveryController.OnItemRemoved -= OnDeliveryItemRemoved;
         }

@@ -82,6 +82,7 @@
     <Compile Include="UIElements\UIController.cs" />
     <Compile Include="UIElements\UIDeliveryController.cs" />
     <Compile Include="UIElements\UIDeliveryQueueItem.cs" />
+    <Compile Include="UIElements\UIDialog.cs" />
     <Compile Include="UIElements\UIMenu.cs" />
     <Compile Include="UIElements\UIMotherShipUpgrades.cs" />
     <Compile Include="UIElements\UIOrdersShop.cs" />

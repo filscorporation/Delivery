@@ -17,6 +17,12 @@ namespace SteelCustom.Buildings
 
         private const int COUNTER_DAMAGE = 1;
 
+        protected override void UpdateBuilding()
+        {
+            if (Input.IsKeyJustPressed(KeyCode.L)) // TODO: remove
+                DestroyBuilding();
+        }
+
         protected override void OnPlaced()
         {
             GameController.Instance.Player.ResearchStationPlaced = true;

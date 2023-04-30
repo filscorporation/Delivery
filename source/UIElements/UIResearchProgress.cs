@@ -25,7 +25,8 @@ namespace SteelCustom.UIElements
 
         private void UpdateProgress()
         {
-            if (GameController.Instance.GameState != GameState.Battle)
+            if (GameController.Instance.GameState != GameState.Battle
+                || GameController.Instance.BattleController.EnemyController == null)
                 return;
             
             int progress = (int)(GameController.Instance.BattleController.EnemyController.AttackCompletion * 100);

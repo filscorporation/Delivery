@@ -10,6 +10,7 @@ namespace SteelCustom
     public class EnemyController : ScriptComponent
     {
         public float AttackCompletion => Steel.Math.Clamp(_attackProgress / _attackLength, 0, 1);
+        public float CurrentWave => _currentWave;
         public bool AttackCompleted { get; private set; } = false;
         public List<EnemyUnit> Enemies => new List<EnemyUnit>(_enemies);
 
@@ -25,6 +26,13 @@ namespace SteelCustom
 
         public override void OnUpdate()
         {
+            if (Input.IsKeyJustPressed(KeyCode.W)) // TODO: remove
+            {
+                _currentWave = _waves.Count;
+                _attackProgress = _attackLength;
+                AttackCompleted = true;
+            }
+            
             if (!_isAttacking)
                 return;
             

@@ -16,7 +16,7 @@ namespace SteelCustom.Buildings
         public override string Name => "Turret";
         public override string Description => $"Deals average damage at low range.\nPrice: {Price}, Delivery time: {DeliveryTime}";
 
-        private Vector2 ShootPosition => (Vector2)Transformation.Position + new Vector2(3.0f / 32, 6.5f / 32);
+        private Vector2 ShootPosition => (Vector2)Transformation.Position + new Vector2(1.0f / 32, 6.5f / 32);
 
         private float _shootTimer = 0;
         private Sprite _bulletSprite;

@@ -28,6 +28,9 @@ namespace SteelCustom
         private bool _winGame = false;
         private bool _loseGame = false;
         
+        private bool _shipUpgradeDialog = false;
+        private bool _halfCompletedDilog = false;
+        
         public override void OnCreate()
         {
             Instance = this;
@@ -72,6 +75,21 @@ namespace SteelCustom
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
+            if (GameState == GameState.Battle)
+            {
+                if (!_shipUpgradeDialog && BattleController.EnemyController.CurrentWave > 3)
+                {
+                    StartCoroutine(ShowShipUpgradesCoroutine());
+                    _shipUpgradeDialog = true;
+                }
+
+                if (!_halfCompletedDilog && BattleController.EnemyController.AttackCompletion >= 0.5f)
+                {
+                    StartCoroutine(ShowHalfCompleteCoroutine());
+                    _halfCompletedDilog = true;
+                }
+            }
         }
 
         public void StartGame()
@@ -81,13 +99,11 @@ namespace SteelCustom
 
         public void RestartGame()
         {
-            Dispose();
             SceneManager.SetActiveScene(SceneManager.GetActiveScene());
         }
 
         public void ExitGame()
         {
-            Dispose();
             Application.Quit();
         }
 
@@ -99,13 +115,11 @@ namespace SteelCustom
 
         public void LoseGame()
         {
+            if (_winGame)
+                return;
+            
             _loseGame = true;
             _changeState = true;
-        }
-
-        private void Dispose()
-        {
-            UIController?.Dispose();
         }
 
         private IEnumerator IntroCoroutine()
@@ -120,15 +134,14 @@ namespace SteelCustom
             //source.Play(ResourcesManager.GetAudioTrack("background_music.wav"));
             source.Volume = 0.1f;
 
+            new Entity("Environment").AddComponent<Environment>().Init();
+
             CameraController = Camera.Main.Entity.AddComponent<CameraController>();
             CameraController.ToTopScene(true);
             
             UIController = new Entity("UI controller").AddComponent<UIController>();
             UIController.CreateMenu();
-            
-            yield return new WaitForSeconds(0.2f);
 
-            _startGame = true; // TODO: menu
             yield return new WaitWhile(() => !_startGame);
 
             Player = new Entity("Player").AddComponent<Player>();
@@ -136,18 +149,20 @@ namespace SteelCustom
             BattleController = new Entity("BattleController").AddComponent<BattleController>();
             MotherShip = new Entity("MotherShip").AddComponent<MotherShip>();
             DeliveryController = new Entity("DeliveryController").AddComponent<DeliveryController>();
-
-            new Entity("Environment").AddComponent<Environment>().Init();
             
             Player.Init();
+            DialogController.Init();
             BattleController.Init();
             DeliveryController.Init();
 
-            yield return DialogController.ShowIntroDialog();
+            yield return new WaitForSeconds(1.0f);
+
+            DialogController.ShowIntroDialog();
+            yield return new WaitWhile(() => DialogController.ShowingDialog);
             
             CameraController.ToBottomScene();
 
-            yield return new WaitForSeconds(2.0f); // TODO
+            yield return new WaitForSeconds(2.0f);
 
             Log.LogInfo("End Intro state");
             _changeState = true;
@@ -159,9 +174,11 @@ namespace SteelCustom
             Log.LogInfo("Start PlaceResearchStation state");
             
             UIController.CreateGameUI();
+            
+            DialogController.ShowPlaceResearchStationDialog();
+            yield return new WaitWhile(() => DialogController.ShowingDialog);
+            
             BattleController.PlaceResearchStation();
-
-            yield return DialogController.ShowPlaceResearchStationDialog();
             
             yield return new WaitWhile(() => !Player.ResearchStationPlaced);
             
@@ -179,9 +196,10 @@ namespace SteelCustom
             GameState = GameState.OrderFirstTower;
             Log.LogInfo("Start OrderFirstTower state");
             
+            DialogController.ShowOrderFirstTowerDialog();
+            yield return new WaitWhile(() => DialogController.ShowingDialog);
+            
             DeliveryController.OpenForFirstOrder();
-
-            yield return DialogController.ShowOrderFirstTowerDialog();
             
             yield return new WaitWhile(() => !Player.FirstTowerOrdered);
             
@@ -193,48 +211,66 @@ namespace SteelCustom
 
         private IEnumerator StartBattleCoroutine()
         {
+            DialogController.ShowBeforeBattleDialog();
+            
+            yield return new WaitWhile(() => DialogController.ShowingDialog);
+            
             GameState = GameState.Battle;
             Log.LogInfo("Start Battle state");
 
             BattleController.StartBattle();
+        }
 
-            yield return DialogController.ShowBeforeBattleDialog();
-            
-            yield return new WaitForSeconds(1.0f);
+        private IEnumerator ShowShipUpgradesCoroutine()
+        {
+            DialogController.ShowUpgradeMotherShipDialog();
+            yield return new WaitWhile(() => DialogController.ShowingDialog);
             
             UIController.EnableOpenMotherShipButton();
+        }
+
+        private IEnumerator ShowHalfCompleteCoroutine()
+        {
+            DialogController.ShowResearchHalfDownDialog();
+            yield return new WaitWhile(() => DialogController.ShowingDialog);
         }
 
         private IEnumerator LoseGameCoroutine()
         {
             GameState = GameState.Lose;
             Log.LogInfo("Start Lose state");
+            
+            UIController.OpenPlanet();
 
             UIController.CloseOrdersShop();
             UIController.DisableOpenOrdersShopButton();
+            UIController.DisableOpenMotherShipButton();
             
-            yield return DialogController.ShowLoseDialog();
+            DialogController.ShowLoseDialog();
+            yield return new WaitWhile(() => DialogController.ShowingDialog);
             
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.5f);
             
-            //Entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("end_game.wav"));
-            //UIController.Menu.OpenOnLoseScreen();
+            UIController.Menu.OpenOnLoseScreen();
         }
 
         private IEnumerator WinGameCoroutine()
         {
             GameState = GameState.Win;
             Log.LogInfo("Start Win state");
+            
+            UIController.OpenPlanet();
 
             UIController.CloseOrdersShop();
             UIController.DisableOpenOrdersShopButton();
+            UIController.DisableOpenMotherShipButton();
 
-            yield return DialogController.ShowWinDialog();
+            DialogController.ShowWinDialog();
+            yield return new WaitWhile(() => DialogController.ShowingDialog);
             
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(2.0f);
             
-            //Entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("end_game.wav"));
-            //UIController.Menu.OpenOnWinScreen();
+            Application.Quit();
         }
     }
 }

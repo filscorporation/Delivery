@@ -32,6 +32,12 @@ namespace SteelCustom.UIElements
                 UpdateInGameUI();
         }
 
+        public override void OnDestroy()
+        {
+            if (GameController.Instance.Player != null)
+                GameController.Instance.Player.OnCreditsChanged -= OnCreditsChanged;
+        }
+
         public void CreateMenu()
         {
             K = Screen.Width / GameController.MAP_SIZE;
@@ -39,6 +45,9 @@ namespace SteelCustom.UIElements
             UIRoot = UI.CreateUIElement();
             UIRoot.GetComponent<RectTransformation>().AnchorMin = Vector2.Zero;
             UIRoot.GetComponent<RectTransformation>().AnchorMax = Vector2.One;
+            
+            Menu = UI.CreateUIElement("Menu").AddComponent<UIMenu>();
+            Menu.Init();
         }
 
         public void CreateGameUI()
@@ -52,12 +61,6 @@ namespace SteelCustom.UIElements
             CreateOrdersShop();
             CreateDeliveryController();
             CreateResearchUI();
-        }
-
-        public void Dispose()
-        {
-            GameController.Instance.Player.OnCreditsChanged -= OnCreditsChanged;
-            _deliveryController?.Dispose();
         }
 
         public void EnableOpenOrdersShopButton()
@@ -320,6 +323,9 @@ namespace SteelCustom.UIElements
             CloseMotherShipUpgrades();
 
             yield return new WaitForSeconds(2.0f);
+            
+            if (GameController.Instance.GameState == GameState.Win || GameController.Instance.GameState == GameState.Lose)
+                yield break;
             
             EnableOpenMotherShipButton();
             
