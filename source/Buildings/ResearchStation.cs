@@ -25,6 +25,8 @@ namespace SteelCustom.Buildings
 
         protected override void OnTakeDamage(EnemyUnit attacker)
         {
+            if (attacker.Entity == null || attacker.Entity.IsDestroyed())
+                return;
             attacker.TakeDamage(COUNTER_DAMAGE);
         }
 

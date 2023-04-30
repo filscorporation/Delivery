@@ -45,7 +45,7 @@ namespace SteelCustom.UIElements
             icon.RectTransform.Size = new Vector2(12 * K, 12 * K);
             icon.RectTransform.AnchoredPosition = new Vector2(1 * K, 1 * K - icon.RectTransform.Size.Y * 0.5f);
             icon.ConsumeEvents = false;
-                
+            
             _timeText = UI.CreateUIText(Math.Ceiling(DeliveryItem.TimeLeft).ToString(), "Time", Entity);
             _timeText.RectTransform.AnchorMin = new Vector2(0, 0);
             _timeText.RectTransform.AnchorMax = new Vector2(1, 0);

@@ -5,7 +5,7 @@ using SteelCustom.Effects;
 
 namespace SteelCustom
 {
-    public class Player :ScriptComponent
+    public class Player : ScriptComponent
     {
         public event Action OnCreditsChanged;
 
@@ -14,12 +14,20 @@ namespace SteelCustom
         public bool ResearchStationPlaced { get; set; } = false;
         public bool FirstTowerOrdered { get; set; } = false;
 
+        private CreditsAnimator _creditsAnimator;
+
+        public void Init()
+        {
+            _creditsAnimator = new Entity("CreditsAnimator", Entity).AddComponent<CreditsAnimator>();
+            _creditsAnimator.Init();
+        }
+
         public void GainCredits(int reward, Vector2 sourcePosition)
         {
             Credits += reward;
             OnCreditsChanged?.Invoke();
-            
-            // TODO: animate sourcePosition
+
+            _creditsAnimator.Animate(reward, sourcePosition);
         }
         
         public void SpendCredits(int amount)

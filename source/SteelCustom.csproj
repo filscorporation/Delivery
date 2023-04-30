@@ -48,11 +48,14 @@
     <Compile Include="Buildings\BuildingType.cs" />
     <Compile Include="Buildings\CreditsMiner.cs" />
     <Compile Include="Buildings\MineThrower.cs" />
+    <Compile Include="Buildings\Projectile.cs" />
     <Compile Include="Buildings\ResearchStation.cs" />
     <Compile Include="Buildings\RocketLauncher.cs" />
     <Compile Include="Buildings\Turret.cs" />
     <Compile Include="Buildings\Wall.cs" />
     <Compile Include="Buildings\WaveGenerator.cs" />
+    <Compile Include="CreditsAnimator.cs" />
+    <Compile Include="DamageAnimator.cs" />
     <Compile Include="DeliveryController.cs" />
     <Compile Include="DeliveryItem.cs" />
     <Compile Include="DialogController.cs" />

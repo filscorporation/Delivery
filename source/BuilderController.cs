@@ -99,9 +99,53 @@ namespace SteelCustom
             building.Transformation.Position = new Vector3(position.X, position.Y, 0.5f);
             building.Place();
             
+            ReplaceBuildings(building.Transformation.Position, building.ColliderSize, building.Entity);
+            
             _sortedBuildingsCache.Add(building);
             
             BuildingsChanged();
+        }
+
+        private Building GetBuilding(Entity entity)
+        {
+            if (entity == null || entity.IsDestroyed())
+                return null;
+            // No inheritance in engine :(
+            if (entity.HasComponent<ResearchStation>())
+                return entity.GetComponent<ResearchStation>();
+            if (entity.HasComponent<Turret>())
+                return entity.GetComponent<Turret>();
+            if (entity.HasComponent<Wall>())
+                return entity.GetComponent<Wall>();
+            if (entity.HasComponent<RocketLauncher>())
+                return entity.GetComponent<RocketLauncher>();
+            if (entity.HasComponent<WaveGenerator>())
+                return entity.GetComponent<WaveGenerator>();
+            if (entity.HasComponent<CreditsMiner>())
+                return entity.GetComponent<CreditsMiner>();
+            if (entity.HasComponent<MineThrower>())
+                return entity.GetComponent<MineThrower>();
+            return null;
+        }
+
+        private void ReplaceBuildings(Vector2 center, Vector2 size, Entity entity)
+        {
+            foreach (Entity collidedEntity in Physics.AABBCast(center, size))
+            {
+                if (!collidedEntity.Equals(entity))
+                {
+                    Building building = GetBuilding(collidedEntity);
+                    if (building != null && building.IsPlaced)
+                    {
+                        ReplaceBuilding(building);
+                    }
+                }
+            }
+        }
+
+        private void ReplaceBuilding(Building building)
+        {
+            building.DestroyBuilding();
         }
 
         private void UpdateDraft()
@@ -128,19 +172,34 @@ namespace SteelCustom
                     return false;
             }
 
+            bool result = true;
             foreach (Entity collidedEntity in Physics.AABBCast(DraftBuilding.Transformation.Position, DraftBuilding.ColliderSize))
             {
                 if (!collidedEntity.Equals(DraftBuilding.Entity))
-                    return false;
+                {
+                    Building building = GetBuilding(collidedEntity);
+                    if (building == null)
+                        continue;
+                    
+                    if (building is ResearchStation)
+                        result = false;
+                    else
+                        building.ShowWillGetReplaced();
+                }
             }
             
-            return true;
+            return result;
         }
 
         private void PlaceDraft()
         {
             GameController.Instance.DeliveryController.AddItem(DraftBuilding, DraftBuilding.Transformation.Position);
             
+            Entity effect = ResourcesManager.GetAsepriteData("place_draft_effect.aseprite").CreateEntityFromAsepriteData();
+            effect.Transformation.Position = DraftBuilding.Transformation.Position + new Vector3(0, 0.3f, -1);
+            effect.GetComponent<Animator>().Play("Effect");
+            effect.Destroy(0.7f);
+
             ClearDraft();
         }
 

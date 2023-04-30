@@ -8,6 +8,7 @@ namespace SteelCustom
     {
         public BuilderController BuilderController { get; private set; }
         public EnemyController EnemyController { get; private set; }
+        public DamageAnimator DamageAnimator { get; private set; }
 
         public override void OnUpdate()
         {
@@ -30,6 +31,7 @@ namespace SteelCustom
         public void Init()
         {
             BuilderController = new Entity("BuilderController").AddComponent<BuilderController>();
+            DamageAnimator = new Entity("DamageAnimator").AddComponent<DamageAnimator>();
         }
 
         public void PlaceResearchStation()

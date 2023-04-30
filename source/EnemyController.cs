@@ -75,6 +75,7 @@ namespace SteelCustom
             unit.Init(enemyType, () => _enemies.Remove(node));
 
             float y = unit.IsGround ? BuilderController.GROUND_HEIGHT : FLY_HEIGHT;
+            y += 1.0f / 32;
             unit.Transformation.Position = new Vector3(6 + Random.NextFloat(-0.5f, 0.5f), y, 1);
         }
 

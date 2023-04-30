@@ -8,7 +8,7 @@ namespace SteelCustom.Buildings
     {
         public bool IsPlaced { get; private set; } = false;
         public abstract BuildingType BuildingType { get; }
-        public virtual Vector2 ColliderSize => new Vector2(0.2125f, 0.2f);
+        public virtual Vector2 ColliderSize => new Vector2(0.175f, 0.2f);
         
         public int Health { get; protected set; }
         public abstract int MaxHealth { get; }
@@ -17,6 +17,19 @@ namespace SteelCustom.Buildings
         public abstract string SpritePath { get; }
         public abstract string Name { get; }
         public abstract string Description { get; }
+        
+        private bool _showWillGetReplaced;
+        private Entity _redCross;
+
+        public override void OnUpdate()
+        {
+            _redCross.IsActiveSelf = _showWillGetReplaced;
+            if (_showWillGetReplaced)
+                _showWillGetReplaced = false;
+            
+            if (IsPlaced)
+                UpdateBuilding();
+        }
 
         public void Init()
         {
@@ -27,6 +40,12 @@ namespace SteelCustom.Buildings
             Entity.AddComponent<SpriteRenderer>().Sprite = sprite;
             Entity.AddComponent<BoxCollider>().Size = ColliderSize;
             Entity.AddComponent<RigidBody>().RigidBodyType = RigidBodyType.Static;
+
+            _redCross = new Entity("RedCross", Entity);
+            _redCross.Transformation.LocalPosition = new Vector3(0, 0, 1.5f);
+            Sprite redCrossSprite = ResourcesManager.GetImage("red_cross.png");
+            redCrossSprite.Pivot = new Vector2(0.5f, 0.0f);
+            _redCross.AddComponent<SpriteRenderer>().Sprite = redCrossSprite;
         }
 
         public void Place()
@@ -38,12 +57,25 @@ namespace SteelCustom.Buildings
 
         public void SetDraftState(bool checkDraft)
         {
-            
+            if (!checkDraft)
+                ShowWillGetReplaced();
         }
 
-        public void Repair()
+        public void Repair(int healthBoost)
         {
-            Health = MaxHealth;
+            if (Health >= MaxHealth)
+                Health += healthBoost;
+            else
+                Health = MaxHealth;
+        }
+
+        public void ShowWillGetReplaced()
+        {
+            if (_showWillGetReplaced)
+                return;
+
+            _showWillGetReplaced = true;
+            _redCross.IsActiveSelf = _showWillGetReplaced;
         }
 
         public void TakeDamage(EnemyUnit attacker, int damage)
@@ -51,13 +83,17 @@ namespace SteelCustom.Buildings
             Health = Math.Max(0, Health - damage);
             OnTakeDamage(attacker);
             
+            GameController.Instance.BattleController.DamageAnimator.Animate(damage, Transformation.Position, false);
+            
             if (Health <= 0)
                 DestroyBuilding();
         }
+        
+        protected virtual void UpdateBuilding() { }
 
         protected virtual void OnTakeDamage(EnemyUnit attacker) { }
 
-        private void DestroyBuilding()
+        public void DestroyBuilding()
         {
             GameController.Instance.BattleController.BuilderController.OnBuildingDestroyed(this);
             OnBuildingDestroyed();

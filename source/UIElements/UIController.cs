@@ -6,6 +6,7 @@ namespace SteelCustom.UIElements
     {
         public float K { get; private set; }
         public static Color DarkColor => new Color(22, 15, 41);
+        public static Color RedColor => new Color(141, 10, 10);
         
         public UIMenu Menu { get; private set; }
         public Entity UIRoot { get; private set; }

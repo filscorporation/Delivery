@@ -22,7 +22,7 @@ namespace SteelCustom.Enemies
         public abstract float AttackRange { get; }
 
         public virtual bool IsGround => true;
-        protected virtual Vector2 ColliderSize => new Vector2(0.3f, 0.3f);
+        protected virtual Vector2 ColliderSize => new Vector2(0.3f, 0.5f);
 
         private Action _deadCallback;
         private Building _target = null;
@@ -30,6 +30,7 @@ namespace SteelCustom.Enemies
         private Animator _animator;
         private bool _isWalking = false;
         private bool _isAttacking = false;
+        private float _knockBackForce;
 
         public override void OnUpdate()
         {
@@ -57,6 +58,9 @@ namespace SteelCustom.Enemies
             Health = MaxHealth;
             _deadCallback = deadCallback;
 
+            Entity.AddComponent<RigidBody>().RigidBodyType = RigidBodyType.Static;
+            Entity.AddComponent<BoxCollider>().Size = ColliderSize;
+
             AsepriteData data = ResourcesManager.GetAsepriteData(SpritePath, true);
             data.Animations.Last().Loop = false;
             foreach (Sprite sprite in data.Sprites)
@@ -69,11 +73,39 @@ namespace SteelCustom.Enemies
             _animator.AddAnimations(data.Animations);
         }
 
+        public static EnemyUnit GetEnemyUnit(Entity entity)
+        {
+            if (entity == null || entity.IsDestroyed())
+                return null;
+            if (entity.HasComponent<Soldier>())
+                return entity.GetComponent<Soldier>();
+            if (entity.HasComponent<Runner>())
+                return entity.GetComponent<Runner>();
+            if (entity.HasComponent<Tank>())
+                return entity.GetComponent<Tank>();
+            if (entity.HasComponent<Flying>())
+                return entity.GetComponent<Flying>();
+            return null;
+        }
+
         public void TakeDamage(int damage)
         {
+            if (IsDead)
+                return;
+            
             Health = Math.Max(0, Health - damage);
+            
+            GameController.Instance.BattleController.DamageAnimator.Animate(damage, Transformation.Position, true);
+            
             if (Health <= 0)
                 Die();
+        }
+
+        public void AddKnockBack(float force)
+        {
+            if (MaxHealth >= 20)
+                force *= 0.5f;
+            _knockBackForce += force;
         }
 
         private void Die()
@@ -86,6 +118,12 @@ namespace SteelCustom.Enemies
 
         private void UpdateAttack()
         {
+            if (_knockBackForce > 0)
+            {
+                Transformation.Position += new Vector3(_knockBackForce * Time.DeltaTime, 0);
+                _knockBackForce -= Time.DeltaTime * 10.0f;
+            }
+            
             if (_target == null || _target.Entity.IsDestroyed())
                 _target = GetTarget();
 
@@ -95,7 +133,7 @@ namespace SteelCustom.Enemies
                 return;
             }
 
-            if (Math.Abs(Transformation.Position.X - _target.Transformation.Position.X) > AttackRange)
+            if (!CanAttack(_target))
             {
                 Move();
                 return;
@@ -107,6 +145,11 @@ namespace SteelCustom.Enemies
                 StartCoroutine(AttackCoroutine());
                 return;
             }
+        }
+
+        private bool CanAttack(Building building)
+        {
+            return Math.Abs(Transformation.Position.X - building.Transformation.Position.X) <= AttackRange;
         }
 
         private IEnumerator AttackCoroutine()
@@ -133,7 +176,7 @@ namespace SteelCustom.Enemies
 
         protected virtual void Attack()
         {
-            if (_target != null && !_target.Entity.IsDestroyed())
+            if (_target != null && !_target.Entity.IsDestroyed() && CanAttack(_target))
             {
                 _target.TakeDamage(this, Damage);
             }

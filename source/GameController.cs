@@ -133,6 +133,7 @@ namespace SteelCustom
 
             new Entity("Environment").AddComponent<Environment>().Init();
             
+            Player.Init();
             BattleController.Init();
             DeliveryController.Init();
 

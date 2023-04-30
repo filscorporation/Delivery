@@ -28,10 +28,11 @@ namespace SteelCustom
 
         public void AddItem(Building building, Vector2 position)
         {
+            float modificator = GameController.Instance.MotherShip.BuildingDeliveryModifier;
             if (GameController.Instance.Player.ResearchStationPlaced)
                 GameController.Instance.Player.FirstTowerOrdered = true;
             
-            var item = new DeliveryItem { BuildingType = building.BuildingType, BuildingPosition = position, TimeLeft = building.DeliveryTime, SpritePath = building.SpritePath };
+            var item = new DeliveryItem { BuildingType = building.BuildingType, BuildingPosition = position, TimeLeft = building.DeliveryTime * modificator, SpritePath = building.SpritePath };
             _deliveryQueue.AddLast(item);
             
             OnItemAdded?.Invoke(item);
@@ -39,7 +40,8 @@ namespace SteelCustom
 
         public void AddItem(Effect effect)
         {
-            var item = new DeliveryItem { Effect = effect, TimeLeft = effect.DeliveryTime, SpritePath = effect.SpritePath };
+            float modificator = GameController.Instance.MotherShip.EffectDeliveryModifier;
+            var item = new DeliveryItem { Effect = effect, TimeLeft = effect.DeliveryTime * modificator, SpritePath = effect.SpritePath };
             _deliveryQueue.AddLast(item);
             
             OnItemAdded?.Invoke(item);
@@ -83,8 +85,8 @@ namespace SteelCustom
         {
             if (item.IsBuilding)
             {
-                // TODO: create building delivery item
-                GameController.Instance.BattleController.BuilderController.PlaceBuilding(item.BuildingType, item.BuildingPosition);
+                var buildingDeliveryItem = new Entity("BuildingDeliveryItem").AddComponent<BuildingDeliveryItem>();
+                buildingDeliveryItem.Init(item);
             }
             else
             {
