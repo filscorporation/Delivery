@@ -61,6 +61,7 @@
     <Compile Include="DeliveryController.cs" />
     <Compile Include="DeliveryItem.cs" />
     <Compile Include="DialogController.cs" />
+    <Compile Include="Effects\BigRocket.cs" />
     <Compile Include="Effects\Effect.cs" />
     <Compile Include="Effects\EffectType.cs" />
     <Compile Include="Effects\Laser.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="UIElements\UIMenu.cs" />
     <Compile Include="UIElements\UIMotherShipUpgrades.cs" />
     <Compile Include="UIElements\UIOrdersShop.cs" />
+    <Compile Include="UIElements\UIResearchProgress.cs" />
     <Compile Include="Upgrades\AutomatedAssemblyLineUpgrade.cs" />
     <Compile Include="Upgrades\BlackMarketUpgrade.cs" />
     <Compile Include="Upgrades\MotherShipUpgrade.cs" />

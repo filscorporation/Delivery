@@ -87,12 +87,14 @@ namespace SteelCustom.UIElements
                     }
                 );
                 
-                UIImage icon = UI.CreateUIImage(ResourcesManager.GetImage(effect.SpritePath), "ShopItemIcon", itemButton.Entity);
+                Sprite sprite = ResourcesManager.GetImage(effect.SpritePath);
+                sprite.Pivot = new Vector2(0.5f, 0);
+                UIImage icon = UI.CreateUIImage(sprite, "ShopItemIcon", itemButton.Entity);
                 icon.RectTransform.AnchorMin = new Vector2(0, 0);
                 icon.RectTransform.AnchorMax = new Vector2(0, 0);
                 icon.RectTransform.Pivot = new Vector2(0, 0);
                 icon.RectTransform.Size = new Vector2(12 * K, 12 * K);
-                icon.RectTransform.AnchoredPosition = new Vector2(1 * K, 1 * K);
+                icon.RectTransform.AnchoredPosition = new Vector2(1 * K, 1 * K - icon.RectTransform.Size.Y * 0.5f);
                 icon.ConsumeEvents = false;
                 
                 UIText text = UI.CreateUIText(effect.Description, "ShopItemIcon", itemButton.Entity);

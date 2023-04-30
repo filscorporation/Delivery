@@ -1,4 +1,6 @@
-﻿namespace SteelCustom.Effects
+﻿using Steel;
+
+namespace SteelCustom.Effects
 {
     public class Rocket : Effect
     {
@@ -9,9 +11,13 @@
         public override string SpritePath => "rocket.aseprite";
         public override string Description => $"Deal massive damage in the small area.\nPrice: {Price}, Delivery time: {DeliveryTime}";
         
+        private const int DAMAGE = 10;
+        private const float RANGE = 0.5f;
+        
         public override void Apply()
         {
-            
+            BigRocket bigRocket = new Entity("BigRocket").AddComponent<BigRocket>();
+            bigRocket.Init(Target, DAMAGE, RANGE);
         }
     }
 }

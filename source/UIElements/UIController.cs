@@ -1,4 +1,5 @@
-﻿using Steel;
+﻿using System.Collections;
+using Steel;
 
 namespace SteelCustom.UIElements
 {
@@ -21,6 +22,7 @@ namespace SteelCustom.UIElements
         private UIOrdersShop _ordersShop;
         private UIImage _deliveryLabel;
         private UIDeliveryController _deliveryController;
+        private UIResearchProgress _researchProgress;
 
         public override void OnUpdate()
         {
@@ -49,6 +51,7 @@ namespace SteelCustom.UIElements
             CreateCreditsInfo();
             CreateOrdersShop();
             CreateDeliveryController();
+            CreateResearchUI();
         }
 
         public void Dispose()
@@ -224,6 +227,21 @@ namespace SteelCustom.UIElements
             _deliveryController.Init();
         }
 
+        private void CreateResearchUI()
+        {
+            _researchProgress = UI.CreateUIElement("ResearchUI", UIRoot).AddComponent<UIResearchProgress>();
+            var rt = _researchProgress.GetComponent<RectTransformation>();
+            rt.AnchorMin = new Vector2(0.0f, 0.0f);
+            rt.AnchorMax = new Vector2(0.0f, 0.0f);
+            rt.Pivot = new Vector2(0, 0);
+            rt.Size = new Vector2(70 * K, 14 * K);
+            rt.AnchoredPosition = new Vector2(1 * K, 1 * K);
+            
+            _researchProgress.Init();
+            
+            CloseResearchProgress();
+        }
+
         private void OnCreditsChanged()
         {
             _ordersShop.UpdateState();
@@ -253,29 +271,61 @@ namespace SteelCustom.UIElements
             _motherShipUpgrades.Entity.IsActiveSelf = false;
         }
 
+        public void OpenResearchProgress()
+        {
+            _researchProgress.Entity.IsActiveSelf = true;
+        }
+
+        private void CloseResearchProgress()
+        {
+            _researchProgress.Entity.IsActiveSelf = false;
+        }
+
         public void OpenMotherShip()
+        {
+            GameController.Instance.CameraController.ToTopScene();
+
+            StartCoroutine(OpenMotherShipCoroutine());
+        }
+
+        private IEnumerator OpenMotherShipCoroutine()
         {
             GameController.Instance.CameraController.ToTopScene();
             
             DisableOpenMotherShipButton();
-            EnableOpenPlanetButton();
-            OpenMotherShipUpgrades();
 
             CloseOrdersShop();
             DisableDeliveryQueue();
             DisableOpenOrdersShopButton();
+            CloseResearchProgress();
+
+            yield return new WaitForSeconds(2.0f);
+            
+            EnableOpenPlanetButton();
+            OpenMotherShipUpgrades();
         }
 
         public void OpenPlanet()
         {
             GameController.Instance.CameraController.ToBottomScene();
+
+            StartCoroutine(OpenPlanetCoroutine());
+        }
+
+        private IEnumerator OpenPlanetCoroutine()
+        {
+            GameController.Instance.CameraController.ToBottomScene();
             
-            EnableOpenMotherShipButton();
             DisableOpenPlanetButton();
             CloseMotherShipUpgrades();
+
+            yield return new WaitForSeconds(2.0f);
+            
+            EnableOpenMotherShipButton();
             
             EnableDeliveryQueue();
             EnableOpenOrdersShopButton();
+            OpenResearchProgress();
         }
     }
 }

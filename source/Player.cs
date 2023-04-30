@@ -13,7 +13,7 @@ namespace SteelCustom
         public int Credits { get; private set; } = 500; // TODO: remove
 
         public bool ResearchStationPlaced { get; set; } = false;
-        public bool FirstTowerOrdered { get; set; } = false;
+        public bool FirstTowerOrdered { get; private set; } = false;
 
         private CreditsAnimator _creditsAnimator;
 
@@ -40,13 +40,25 @@ namespace SteelCustom
                 Log.LogError($"Credits less than zero: {Credits} (-{amount})");
         }
 
+        public void SetFirstTowerOrdered()
+        {
+            FirstTowerOrdered = true;
+            OnCreditsChanged?.Invoke(); // To update UI
+        }
+
         public bool CanOrderBuilding(Building building)
         {
+            if (!FirstTowerOrdered && !(building is Turret))
+                return false;
+            
             return Credits >= building.Price;
         }
 
         public bool CanOrderEffect(Effect effect)
         {
+            if (!FirstTowerOrdered)
+                return false;
+            
             return Credits >= effect.Price;
         }
 

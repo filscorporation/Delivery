@@ -10,12 +10,12 @@ namespace SteelCustom
     public class BuilderController : ScriptComponent
     {
         public event Action OnBuildingsChanged;
-        
-        public Building DraftBuilding { get; private set; }
-        public bool IsInBuildMode => DraftBuilding != null;
 
         public const float GROUND_HEIGHT = -1.25f;
-
+        
+        private Building _draftBuilding;
+        private Effect _draftEffect;
+        private Transformation _draftEffectObject;
         private bool _placingConstraints;
         private float _placingPosition;
         private float _placingRange;
@@ -24,9 +24,13 @@ namespace SteelCustom
 
         public override void OnUpdate()
         {
-            if (IsInBuildMode)
+            if (_draftBuilding != null)
             {
-                UpdateDraft();
+                UpdateDraftBuilding();
+            }
+            if (_draftEffect != null)
+            {
+                UpdateDraftEffect();
             }
         }
 
@@ -34,9 +38,9 @@ namespace SteelCustom
         {
             ClearDraft();
 
-            DraftBuilding = CreateBuilding(buildingType);
-            DraftBuilding.Init();
-            UpdateDraft();
+            _draftBuilding = CreateBuilding(buildingType);
+            _draftBuilding.Init();
+            UpdateDraftBuilding();
         }
 
         public void StartPlacingEffect(Effect effect)
@@ -47,16 +51,12 @@ namespace SteelCustom
                 return;
             }
             
-            // TODO:
-        }
+            ClearDraft();
 
-        public void ClearDraft()
-        {
-            if (DraftBuilding == null)
-                return;
-            
-            DraftBuilding.Entity.Destroy();
-            DraftBuilding = null;
+            _draftEffectObject = new Entity("EffectObject").Transformation;
+            _draftEffectObject.Entity.AddComponent<SpriteRenderer>().Sprite = ResourcesManager.GetImage("place_draft_effect.aseprite");
+            _draftEffect = effect;
+            UpdateDraftEffect();
         }
 
         public void SetPlacingConstraints(float position, float range)
@@ -112,6 +112,21 @@ namespace SteelCustom
             BuildingsChanged();
         }
 
+        private void ClearDraft()
+        {
+            if (_draftBuilding != null)
+            {
+                _draftBuilding.Entity.Destroy();
+                _draftBuilding = null;
+            }
+            if (_draftEffect != null)
+            {
+                _draftEffect = null;
+                _draftEffectObject.Entity.Destroy();
+                _draftEffectObject = null;
+            }
+        }
+
         private Building GetBuilding(Entity entity)
         {
             if (entity == null || entity.IsDestroyed())
@@ -154,34 +169,45 @@ namespace SteelCustom
             building.DestroyBuilding();
         }
 
-        private void UpdateDraft()
+        private void UpdateDraftBuilding()
         {
             Vector2 position = Camera.Main.ScreenToWorldPoint(Input.MousePosition).SetY(GROUND_HEIGHT);
-            DraftBuilding.Transformation.Position = new Vector3(position.X, position.Y, 0.5f);;
+            _draftBuilding.Transformation.Position = new Vector3(position.X, position.Y, 0.5f);
 
-            bool checkDraft = CheckDraft();
-            DraftBuilding.SetDraftState(checkDraft);
+            bool checkDraft = CheckDraftBuilding();
+            _draftBuilding.SetDraftState(checkDraft);
 
             if (!UI.IsPointerOverUI() && Input.IsMouseJustPressed(MouseCodes.ButtonLeft))
             {
                 if (checkDraft)
-                    PlaceDraft();
+                    PlaceDraftBuilding();
             }
         }
 
-        private bool CheckDraft()
+        private void UpdateDraftEffect()
+        {
+            Vector2 position = Camera.Main.ScreenToWorldPoint(Input.MousePosition).SetY(GROUND_HEIGHT);
+            _draftEffectObject.Transformation.Position = new Vector3(position.X, position.Y, 0.5f);
+
+            if (!UI.IsPointerOverUI() && Input.IsMouseJustPressed(MouseCodes.ButtonLeft))
+            {
+                PlaceDraftEffect();
+            }
+        }
+
+        private bool CheckDraftBuilding()
         {
             if (_placingConstraints)
             {
-                float x = DraftBuilding.Transformation.Position.X;
+                float x = _draftBuilding.Transformation.Position.X;
                 if (x < _placingPosition - _placingRange || x > _placingPosition + _placingRange)
                     return false;
             }
 
             bool result = true;
-            foreach (Entity collidedEntity in Physics.AABBCast(DraftBuilding.Transformation.Position, DraftBuilding.ColliderSize))
+            foreach (Entity collidedEntity in Physics.AABBCast(_draftBuilding.Transformation.Position, _draftBuilding.ColliderSize))
             {
-                if (!collidedEntity.Equals(DraftBuilding.Entity))
+                if (!collidedEntity.Equals(_draftBuilding.Entity))
                 {
                     Building building = GetBuilding(collidedEntity);
                     if (building == null)
@@ -197,12 +223,24 @@ namespace SteelCustom
             return result;
         }
 
-        private void PlaceDraft()
+        private void PlaceDraftBuilding()
         {
-            GameController.Instance.DeliveryController.AddItem(DraftBuilding, DraftBuilding.Transformation.Position);
+            GameController.Instance.DeliveryController.AddItem(_draftBuilding, _draftBuilding.Transformation.Position);
             
             Entity effect = ResourcesManager.GetAsepriteData("place_draft_effect.aseprite").CreateEntityFromAsepriteData();
-            effect.Transformation.Position = DraftBuilding.Transformation.Position + new Vector3(0, 0.3f, -1);
+            effect.Transformation.Position = _draftBuilding.Transformation.Position + new Vector3(0, 0.3f, -1);
+            effect.GetComponent<Animator>().Play("Effect");
+            effect.Destroy(0.7f);
+
+            ClearDraft();
+        }
+
+        private void PlaceDraftEffect()
+        {
+            GameController.Instance.DeliveryController.AddItem(_draftEffect, _draftEffectObject.Position);
+            
+            Entity effect = ResourcesManager.GetAsepriteData("place_draft_effect.aseprite").CreateEntityFromAsepriteData();
+            effect.Transformation.Position = _draftEffectObject.Transformation.Position + new Vector3(0, 0.3f, -1);
             effect.GetComponent<Animator>().Play("Effect");
             effect.Destroy(0.7f);
 

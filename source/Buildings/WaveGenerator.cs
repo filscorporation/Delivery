@@ -56,12 +56,11 @@ namespace SteelCustom.Buildings
 
             if (_effectSprite == null)
                 _effectSprite = ResourcesManager.GetImage("bullet.png");
-
-            /*Entity entity = new Entity("Bullet");
-            entity.Transformation.Position = (Vector3)ShootPosition + new Vector3(0, 0, -1);
-            entity.AddComponent<SpriteRenderer>().Sprite = _bulletSprite;
-            entity.AddComponent<Projectile>().Init(ShootPosition + new Vector2(distance - 5.0f / 32, 0), bulletDuration);
-            entity.Destroy(bulletDuration);*/
+            
+            Entity entity = ResourcesManager.GetAsepriteData("wave_effect.aseprite").CreateEntityFromAsepriteData();
+            entity.Transformation.Position = (Vector3)ShootPosition + new Vector3(1, 0, -1);
+            entity.GetComponent<Animator>().Play("Effect");
+            entity.Destroy(0.8f);
 
             foreach (EnemyUnit enemyUnit in enemyUnits)
             {

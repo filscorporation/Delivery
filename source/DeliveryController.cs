@@ -30,7 +30,7 @@ namespace SteelCustom
         {
             float modificator = GameController.Instance.MotherShip.BuildingDeliveryModifier;
             if (GameController.Instance.Player.ResearchStationPlaced)
-                GameController.Instance.Player.FirstTowerOrdered = true;
+                GameController.Instance.Player.SetFirstTowerOrdered();
             
             var item = new DeliveryItem { BuildingType = building.BuildingType, Position = position, TimeLeft = building.DeliveryTime * modificator, SpritePath = building.SpritePath };
             _deliveryQueue.AddLast(item);
@@ -90,6 +90,7 @@ namespace SteelCustom
             }
             else
             {
+                item.Effect.Target = item.Position;
                 item.Effect.Apply();
             }
             

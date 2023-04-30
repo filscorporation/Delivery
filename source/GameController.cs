@@ -160,13 +160,12 @@ namespace SteelCustom
             
             UIController.CreateGameUI();
             BattleController.PlaceResearchStation();
-            
-            UIController.EnableOpenMotherShipButton(); // TODO
 
             yield return DialogController.ShowPlaceResearchStationDialog();
             
             yield return new WaitWhile(() => !Player.ResearchStationPlaced);
             
+            UIController.OpenResearchProgress();
             BattleController.EndPlaceResearchStation();
             
             yield return new WaitForSeconds(1.0f);
