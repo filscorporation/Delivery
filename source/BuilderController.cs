@@ -39,8 +39,14 @@ namespace SteelCustom
             UpdateDraft();
         }
 
-        public void StartPlacingEffect(EffectType effectType)
+        public void StartPlacingEffect(Effect effect)
         {
+            if (!effect.NeedTarget)
+            {
+                GameController.Instance.DeliveryController.AddItem(effect, Vector2.Zero);
+                return;
+            }
+            
             // TODO:
         }
 

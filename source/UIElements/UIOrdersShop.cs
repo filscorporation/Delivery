@@ -55,7 +55,7 @@ namespace SteelCustom.UIElements
                 icon.RectTransform.AnchoredPosition = new Vector2(1 * K, 1 * K - icon.RectTransform.Size.Y * 0.5f);
                 icon.ConsumeEvents = false;
                 
-                UIText text = UI.CreateUIText(building.Description, "ShopItemIcon", itemButton.Entity);
+                UIText text = UI.CreateUIText($"{building.Name}\n{building.Description}", "ShopItemIcon", itemButton.Entity);
                 text.RectTransform.AnchorMin = new Vector2(0, 0);
                 text.RectTransform.AnchorMax = new Vector2(1, 0);
                 text.RectTransform.Pivot = new Vector2(0, 0);

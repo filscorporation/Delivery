@@ -51,9 +51,11 @@
     <Compile Include="Buildings\Projectile.cs" />
     <Compile Include="Buildings\ResearchStation.cs" />
     <Compile Include="Buildings\RocketLauncher.cs" />
+    <Compile Include="Buildings\SmallRocket.cs" />
     <Compile Include="Buildings\Turret.cs" />
     <Compile Include="Buildings\Wall.cs" />
     <Compile Include="Buildings\WaveGenerator.cs" />
+    <Compile Include="CameraController.cs" />
     <Compile Include="CreditsAnimator.cs" />
     <Compile Include="DamageAnimator.cs" />
     <Compile Include="DeliveryController.cs" />
@@ -80,8 +82,13 @@
     <Compile Include="UIElements\UIDeliveryController.cs" />
     <Compile Include="UIElements\UIDeliveryQueueItem.cs" />
     <Compile Include="UIElements\UIMenu.cs" />
+    <Compile Include="UIElements\UIMotherShipUpgrades.cs" />
     <Compile Include="UIElements\UIOrdersShop.cs" />
+    <Compile Include="Upgrades\AutomatedAssemblyLineUpgrade.cs" />
+    <Compile Include="Upgrades\BlackMarketUpgrade.cs" />
     <Compile Include="Upgrades\MotherShipUpgrade.cs" />
+    <Compile Include="Upgrades\ParallelDeliveryUpgrade.cs" />
+    <Compile Include="Upgrades\SystemsWarmUpUpgrade.cs" />
     <Compile Include="Wave.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -21,23 +21,29 @@ namespace SteelCustom
         
         public void Animate(int damage, Vector2 sourcePosition, bool isEnemy)
         {
-            _queue.Enqueue((damage, sourcePosition, isEnemy));
+            _queue.Enqueue((-damage, sourcePosition, isEnemy));
+        }
+        
+        public void AnimateRepair(int repair, Vector2 sourcePosition)
+        {
+            _queue.Enqueue((repair, sourcePosition, false));
         }
         
         private void AnimateInner(int damage, Vector2 sourcePosition, bool isEnemy)
         {
             float K = GameController.Instance.UIController.K;
+            bool isRepair = damage > 0;
             
             RectTransformation rectTransform = UI.CreateUIElement("DamageEffect", GameController.Instance.UIController.UIRoot).GetComponent<RectTransformation>();
             rectTransform.AnchoredPosition = Camera.Main.WorldToScreenPoint(sourcePosition + new Vector2(0, 0.45f));
             rectTransform.Size = new Vector2(9 * K, 6 * K);
             
-            UIText text = UI.CreateUIText($"-{damage}", "Text", rectTransform.Entity);
+            UIText text = UI.CreateUIText(isRepair ? $"+{damage}" : $"-{-damage}", "Text", rectTransform.Entity);
             text.RectTransform.AnchorMin = new Vector2(0, 0);
             text.RectTransform.AnchorMax = new Vector2(1, 1);
             text.RectTransform.AnchoredPosition = Vector2.Zero;
             text.RectTransform.Size = Vector2.Zero;
-            text.Color = isEnemy ? UIController.DarkColor : UIController.RedColor;
+            text.Color = isRepair || isEnemy ? UIController.DarkColor : UIController.RedColor;
             text.TextSize = 32;
             text.TextAlignment = AlignmentType.CenterMiddle;
             

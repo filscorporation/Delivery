@@ -11,6 +11,10 @@ namespace SteelCustom.UIElements
         public UIMenu Menu { get; private set; }
         public Entity UIRoot { get; private set; }
 
+        private UIButton _openMotherShipButton;
+        private UIButton _openPlanetButton;
+        private UIMotherShipUpgrades _motherShipUpgrades;
+        
         private UIButton _openOrdersButton;
         private UIImage _creditsIcon;
         private UIText _creditsText;
@@ -37,6 +41,10 @@ namespace SteelCustom.UIElements
 
         public void CreateGameUI()
         {
+            CreateOpenMotherShipButton();
+            CreateOpenPlanetButton();
+            CreateMotherShipUpgrades();
+            
             CreateOpenOrdersShopButton();
             CreateCreditsInfo();
             CreateOrdersShop();
@@ -59,6 +67,26 @@ namespace SteelCustom.UIElements
             _openOrdersButton.Entity.IsActiveSelf = false;
         }
 
+        public void EnableOpenMotherShipButton()
+        {
+            _openMotherShipButton.Entity.IsActiveSelf = true;
+        }
+
+        public void DisableOpenMotherShipButton()
+        {
+            _openMotherShipButton.Entity.IsActiveSelf = false;
+        }
+
+        public void EnableOpenPlanetButton()
+        {
+            _openPlanetButton.Entity.IsActiveSelf = true;
+        }
+
+        public void DisableOpenPlanetButton()
+        {
+            _openPlanetButton.Entity.IsActiveSelf = false;
+        }
+
         public void EnableDeliveryQueue()
         {
             _deliveryController.Entity.IsActiveSelf = true;
@@ -76,14 +104,58 @@ namespace SteelCustom.UIElements
             _creditsText.Text = GameController.Instance.Player.Credits.ToString();
         }
         
+        private void CreateOpenMotherShipButton()
+        {
+            _openMotherShipButton = UI.CreateUIButton(ResourcesManager.GetImage("ui_ship_button.aseprite"), "OpenMotherShipButton", UIRoot);
+            _openMotherShipButton.RectTransform.AnchorMin = new Vector2(0.5f, 1.0f);
+            _openMotherShipButton.RectTransform.AnchorMax = new Vector2(0.5f, 1.0f);
+            _openMotherShipButton.RectTransform.Pivot = new Vector2(1, 1);
+            _openMotherShipButton.RectTransform.Size = new Vector2(56 * K, 21 * K);
+            _openMotherShipButton.RectTransform.AnchoredPosition = new Vector2(-20 * K, 5);
+            
+            _openMotherShipButton.OnClick.AddCallback(OpenMotherShip);
+
+            DisableOpenMotherShipButton();
+        }
+        
+        private void CreateOpenPlanetButton()
+        {
+            _openPlanetButton = UI.CreateUIButton(ResourcesManager.GetImage("ui_planet_button.aseprite"), "OpenPlanetButton", UIRoot);
+            _openPlanetButton.RectTransform.AnchorMin = new Vector2(0.5f, 0.0f);
+            _openPlanetButton.RectTransform.AnchorMax = new Vector2(0.5f, 0.0f);
+            _openPlanetButton.RectTransform.Pivot = new Vector2(1, 0);
+            _openPlanetButton.RectTransform.Size = new Vector2(58 * K, 21 * K);
+            _openPlanetButton.RectTransform.AnchoredPosition = new Vector2(-20 * K, 5);
+            
+            _openPlanetButton.OnClick.AddCallback(OpenPlanet);
+
+            DisableOpenPlanetButton();
+        }
+        
+        private void CreateMotherShipUpgrades()
+        {
+            Entity uiEntity = UI.CreateUIElement("MotherShipUpgrades", UIRoot);
+            _motherShipUpgrades = uiEntity.AddComponent<UIMotherShipUpgrades>();
+            uiEntity.AddComponent<UIImage>().Sprite = ResourcesManager.GetImage("ui_frame.png");
+            RectTransformation rt = uiEntity.GetComponent<RectTransformation>();
+            rt.AnchorMin = new Vector2(0.0f, 0.5f);
+            rt.AnchorMax = new Vector2(0.0f, 0.5f);
+            rt.Size = new Vector2(62 * K, 63 * K);
+            rt.Pivot = new Vector2(0.0f, 1.0f);
+            rt.AnchoredPosition = new Vector2(1 * K, -1 * K);
+            uiEntity.IsActiveSelf = false;
+
+            _motherShipUpgrades.Init();
+        }
+        
         private void CreateOpenOrdersShopButton()
         {
             _openOrdersButton = UI.CreateUIButton(ResourcesManager.GetImage("ui_order_button.aseprite"), "OpenOrdersButton", UIRoot);
-            _openOrdersButton.RectTransform.AnchorMin = new Vector2(0.5f, 1.0f);
-            _openOrdersButton.RectTransform.AnchorMax = new Vector2(0.5f, 1.0f);
-            _openOrdersButton.RectTransform.Pivot = new Vector2(0, 1);
+            _openOrdersButton.RectTransform.AnchorMin = new Vector2(1.0f, 1.0f);
+            _openOrdersButton.RectTransform.AnchorMax = new Vector2(1.0f, 1.0f);
+            _openOrdersButton.RectTransform.Pivot = new Vector2(1, 1);
             _openOrdersButton.RectTransform.Size = new Vector2(56 * K, 21 * K);
-            _openOrdersButton.RectTransform.AnchoredPosition = new Vector2(30, 5);
+            _openOrdersButton.RectTransform.AnchoredPosition = new Vector2(-40, 5);
             
             _openOrdersButton.OnClick.AddCallback(OpenOrdersShop);
 
@@ -96,15 +168,15 @@ namespace SteelCustom.UIElements
             _creditsIcon.RectTransform.AnchorMin = new Vector2(0.5f, 1.0f);
             _creditsIcon.RectTransform.AnchorMax = new Vector2(0.5f, 1.0f);
             _creditsIcon.RectTransform.Pivot = new Vector2(0, 1);
-            _creditsIcon.RectTransform.Size = new Vector2(7 * K, 21 * K);
-            _creditsIcon.RectTransform.AnchoredPosition = new Vector2(-40, 5);
+            _creditsIcon.RectTransform.Size = new Vector2(31 * K, 21 * K);
+            _creditsIcon.RectTransform.AnchoredPosition = new Vector2(-14 * K, 5);
 
             _creditsText = UI.CreateUIText("0", "CreditsText", UIRoot);
             _creditsText.RectTransform.AnchorMin = new Vector2(0.5f, 1.0f);
             _creditsText.RectTransform.AnchorMax = new Vector2(0.5f, 1.0f);
             _creditsText.RectTransform.Pivot = new Vector2(1, 1);
             _creditsText.RectTransform.Size = new Vector2(32 * K, 21 * K);
-            _creditsText.RectTransform.AnchoredPosition = new Vector2(-40 - 2 * K, 5);
+            _creditsText.RectTransform.AnchoredPosition = new Vector2(10 * K - 2 * K, 5);
 
             _creditsText.TextAlignment = AlignmentType.CenterRight;
             _creditsText.TextSize = (int)Math.Round(16 * K);
@@ -155,6 +227,7 @@ namespace SteelCustom.UIElements
         private void OnCreditsChanged()
         {
             _ordersShop.UpdateState();
+            _motherShipUpgrades.UpdateState();
         }
 
         public void OpenOrdersShop()
@@ -167,6 +240,41 @@ namespace SteelCustom.UIElements
         public void CloseOrdersShop()
         {
             _ordersShop.Entity.IsActiveSelf = false;
+            EnableOpenOrdersShopButton();
+        }
+
+        private void OpenMotherShipUpgrades()
+        {
+            _motherShipUpgrades.Entity.IsActiveSelf = true;
+        }
+
+        private void CloseMotherShipUpgrades()
+        {
+            _motherShipUpgrades.Entity.IsActiveSelf = false;
+        }
+
+        public void OpenMotherShip()
+        {
+            GameController.Instance.CameraController.ToTopScene();
+            
+            DisableOpenMotherShipButton();
+            EnableOpenPlanetButton();
+            OpenMotherShipUpgrades();
+
+            CloseOrdersShop();
+            DisableDeliveryQueue();
+            DisableOpenOrdersShopButton();
+        }
+
+        public void OpenPlanet()
+        {
+            GameController.Instance.CameraController.ToBottomScene();
+            
+            EnableOpenMotherShipButton();
+            DisableOpenPlanetButton();
+            CloseMotherShipUpgrades();
+            
+            EnableDeliveryQueue();
             EnableOpenOrdersShopButton();
         }
     }

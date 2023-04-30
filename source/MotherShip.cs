@@ -1,4 +1,6 @@
-﻿using Steel;
+﻿using System.Collections.Generic;
+using Steel;
+using SteelCustom.Upgrades;
 
 namespace SteelCustom
 {
@@ -8,5 +10,8 @@ namespace SteelCustom
         public float BuildingDeliveryModifier { get; set; } = 0.1f; //1.0f;
         public float EffectDeliveryModifier { get; set; } = 0.1f; //1.0f;
         public float CreditGainModifier { get; set; } = 1.0f;
+
+        public List<MotherShipUpgrade> Upgrades => new List<MotherShipUpgrade>(_upgrades);
+        private readonly List<MotherShipUpgrade> _upgrades = new List<MotherShipUpgrade> { new ParallelDeliveryUpgrade(), new AutomatedAssemblyLineUpgrade(), new SystemsWarmUpUpgrade(), new BlackMarketUpgrade() };
     }
 }

@@ -2,6 +2,7 @@
 using Steel;
 using SteelCustom.Buildings;
 using SteelCustom.Effects;
+using SteelCustom.Upgrades;
 
 namespace SteelCustom
 {
@@ -49,6 +50,11 @@ namespace SteelCustom
             return Credits >= effect.Price;
         }
 
+        public bool CanBuyMotherShipUpgrade(MotherShipUpgrade upgrade)
+        {
+            return !upgrade.IsSold && Credits >= upgrade.Price;
+        }
+
         public bool TryOrderBuilding(Building building)
         {
             if (!CanOrderBuilding(building))
@@ -66,7 +72,20 @@ namespace SteelCustom
                 return false;
 
             SpendCredits(effect.Price);
-            GameController.Instance.BattleController.BuilderController.StartPlacingEffect(effect.EffectType);
+            
+            GameController.Instance.BattleController.BuilderController.StartPlacingEffect(effect);
+
+            return true;
+        }
+
+        public bool TryBuyMotherShipUpgrade(MotherShipUpgrade upgrade)
+        {
+            if (!CanBuyMotherShipUpgrade(upgrade))
+                return false;
+
+            SpendCredits(upgrade.Price);
+            
+            upgrade.Apply();
 
             return true;
         }

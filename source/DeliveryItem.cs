@@ -9,7 +9,7 @@ namespace SteelCustom
         public bool IsBuilding => Effect == null;
         
         public BuildingType BuildingType { get; set; }
-        public Vector2 BuildingPosition { get; set; }
+        public Vector2 Position { get; set; }
         public Effect Effect { get; set; }
         public float TimeLeft { get; set; }
         public string SpritePath { get; set; }

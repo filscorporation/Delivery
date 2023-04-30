@@ -27,7 +27,7 @@ namespace SteelCustom.Buildings
         {
             _deliveryItem = deliveryItem;
 
-            Transformation.Position = new Vector3(deliveryItem.BuildingPosition.X, SKY_HEIGHT);
+            Transformation.Position = new Vector3(deliveryItem.Position.X, SKY_HEIGHT);
             var sr = Entity.AddComponent<SpriteRenderer>();
             sr.Sprite = ResourcesManager.GetImage(deliveryItem.SpritePath);
 
@@ -44,7 +44,7 @@ namespace SteelCustom.Buildings
                 _timer -= Time.DeltaTime;
                 if (_timer <= 0.0f)
                 {
-                    GameController.Instance.BattleController.BuilderController.PlaceBuilding(_deliveryItem.BuildingType, _deliveryItem.BuildingPosition);
+                    GameController.Instance.BattleController.BuilderController.PlaceBuilding(_deliveryItem.BuildingType, _deliveryItem.Position);
                     Entity.Destroy();
                 }
             }

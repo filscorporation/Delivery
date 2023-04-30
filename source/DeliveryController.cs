@@ -32,16 +32,16 @@ namespace SteelCustom
             if (GameController.Instance.Player.ResearchStationPlaced)
                 GameController.Instance.Player.FirstTowerOrdered = true;
             
-            var item = new DeliveryItem { BuildingType = building.BuildingType, BuildingPosition = position, TimeLeft = building.DeliveryTime * modificator, SpritePath = building.SpritePath };
+            var item = new DeliveryItem { BuildingType = building.BuildingType, Position = position, TimeLeft = building.DeliveryTime * modificator, SpritePath = building.SpritePath };
             _deliveryQueue.AddLast(item);
             
             OnItemAdded?.Invoke(item);
         }
 
-        public void AddItem(Effect effect)
+        public void AddItem(Effect effect, Vector2 position)
         {
             float modificator = GameController.Instance.MotherShip.EffectDeliveryModifier;
-            var item = new DeliveryItem { Effect = effect, TimeLeft = effect.DeliveryTime * modificator, SpritePath = effect.SpritePath };
+            var item = new DeliveryItem { Effect = effect, Position = position, TimeLeft = effect.DeliveryTime * modificator, SpritePath = effect.SpritePath };
             _deliveryQueue.AddLast(item);
             
             OnItemAdded?.Invoke(item);

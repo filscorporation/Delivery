@@ -63,10 +63,13 @@ namespace SteelCustom.Buildings
 
         public void Repair(int healthBoost)
         {
+            int health = Health;
             if (Health >= MaxHealth)
                 Health += healthBoost;
             else
                 Health = MaxHealth;
+            
+            GameController.Instance.BattleController.DamageAnimator.AnimateRepair(System.Math.Abs(Health - health), Transformation.Position);
         }
 
         public void ShowWillGetReplaced()

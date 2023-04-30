@@ -110,7 +110,8 @@ namespace SteelCustom.Enemies
 
         private void Die()
         {
-            GameController.Instance.Player.GainCredits(Reward, Transformation.Position);
+            int reward = (int)Math.Ceiling(Reward * GameController.Instance.MotherShip.CreditGainModifier);
+            GameController.Instance.Player.GainCredits(reward, Transformation.Position);
             Entity.Destroy(0.5f);
             _animator.Play("Death");
             _deadCallback?.Invoke();

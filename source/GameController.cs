@@ -15,6 +15,7 @@ namespace SteelCustom
         public const float MAP_SIZE = 320;
 
         public Player Player { get; private set; }
+        public CameraController CameraController { get; private set; }
         public UIController UIController { get; private set; }
         public DialogController DialogController { get; private set; }
         public BattleController BattleController { get; private set; }
@@ -118,9 +119,14 @@ namespace SteelCustom
             source.Loop = true;
             //source.Play(ResourcesManager.GetAudioTrack("background_music.wav"));
             source.Volume = 0.1f;
+
+            CameraController = Camera.Main.Entity.AddComponent<CameraController>();
+            CameraController.ToTopScene(true);
             
             UIController = new Entity("UI controller").AddComponent<UIController>();
             UIController.CreateMenu();
+            
+            yield return new WaitForSeconds(0.2f);
 
             _startGame = true; // TODO: menu
             yield return new WaitWhile(() => !_startGame);
@@ -138,6 +144,10 @@ namespace SteelCustom
             DeliveryController.Init();
 
             yield return DialogController.ShowIntroDialog();
+            
+            CameraController.ToBottomScene();
+
+            yield return new WaitForSeconds(2.0f); // TODO
 
             Log.LogInfo("End Intro state");
             _changeState = true;
@@ -150,6 +160,8 @@ namespace SteelCustom
             
             UIController.CreateGameUI();
             BattleController.PlaceResearchStation();
+            
+            UIController.EnableOpenMotherShipButton(); // TODO
 
             yield return DialogController.ShowPlaceResearchStationDialog();
             
@@ -190,6 +202,8 @@ namespace SteelCustom
             yield return DialogController.ShowBeforeBattleDialog();
             
             yield return new WaitForSeconds(1.0f);
+            
+            UIController.EnableOpenMotherShipButton();
         }
 
         private IEnumerator LoseGameCoroutine()

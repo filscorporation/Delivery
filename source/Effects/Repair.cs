@@ -5,6 +5,7 @@ namespace SteelCustom.Effects
     public class Repair : Effect
     {
         public override EffectType EffectType => EffectType.Repair;
+        public override bool NeedTarget => false;
         public override int Price => 20;
         public override int DeliveryTime => 15;
         public override string SpritePath => "repair.aseprite";
