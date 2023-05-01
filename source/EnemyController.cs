@@ -134,9 +134,9 @@ namespace SteelCustom
             _waves = new List<Wave>
             {
                 new Wave(10, EnemyType.Soldier, 1),
+                new Wave(20, EnemyType.Soldier, 1),
                 new Wave(15, EnemyType.Soldier, 1),
-                new Wave(15, EnemyType.Soldier, 1),
-                new Wave(15, EnemyType.Soldier, 2),
+                new Wave(20, EnemyType.Soldier, 2),
                 new Wave(15, EnemyType.Soldier, 2),
                 new Wave(15, EnemyType.Soldier, 3),
                 

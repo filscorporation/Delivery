@@ -9,7 +9,7 @@ namespace SteelCustom.Buildings
     public class Turret : Building
     {
         public override BuildingType BuildingType => BuildingType.Turret;
-        public override int MaxHealth => 5;
+        public override int MaxHealth => 8;
         public override int Price => 10;
         public override int DeliveryTime => 10;
         public override string SpritePath => "turret.aseprite";

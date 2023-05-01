@@ -232,15 +232,18 @@ namespace SteelCustom
             _uiDialog.Entity.IsActiveSelf = true;
             
             _uiDialog.SetText("Congratulation, capitan. Mission completed. We gathered enough information to plan our next campaign.");
-
+            
+            yield return new WaitForSeconds(2.0f);
             yield return new WaitWhile(() => !Input.IsMouseJustPressed(MouseCodes.ButtonLeft));
             yield return null;
             
-            _uiDialog.SetText("Unfortunately estimated costs of research exceeded out expectations, and now we made a hard decision to leave station and all defensive structures on the surface.");
+            _uiDialog.SetText("Unfortunately estimated costs of research exceeded our expectations, and now we made a hard decision to leave station and all defensive structures on the surface.");
 
+            yield return new WaitForSeconds(2.0f);
             yield return new WaitWhile(() => !Input.IsMouseJustPressed(MouseCodes.ButtonLeft));
             yield return null;
             
+            yield return new WaitForSeconds(2.0f);
             _uiDialog.SetText("This means you are also staying there.");
 
             yield return new WaitWhile(() => !Input.IsMouseJustPressed(MouseCodes.ButtonLeft));
@@ -248,6 +251,7 @@ namespace SteelCustom
             
             _uiDialog.SetText("Thank you for your service. Goodbye.");
 
+            yield return new WaitForSeconds(2.0f);
             yield return new WaitWhile(() => !Input.IsMouseJustPressed(MouseCodes.ButtonLeft));
             yield return null;
 

@@ -9,7 +9,7 @@ namespace SteelCustom.UIElements
         private int _currentLength;
         private float _textTimer;
 
-        private const float LETTER_DELAY = 0.025f;
+        private const float LETTER_DELAY = 0.0125f;
 
         public override void OnUpdate()
         {
