@@ -46,8 +46,9 @@ namespace SteelCustom
             text.Color = UIController.DarkColor;
             text.TextSize = 32;
             text.TextAlignment = AlignmentType.CenterMiddle;
-            
-            //image.Entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("gain_credits.wav"));
+
+            Entity.AddComponent<AudioSource>().Volume = 0.15f;
+            Entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("credits_gain.wav"));
 
             float duration = 0.3f;
             if (reward > 10)

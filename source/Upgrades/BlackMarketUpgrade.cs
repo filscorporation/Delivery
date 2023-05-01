@@ -2,7 +2,7 @@
 {
     public class BlackMarketUpgrade : MotherShipUpgrade
     {
-        public override int Price => 60;
+        public override int Price => 50;
         public override string SpritePath => "black_market.aseprite";
         public override string Description => $"Black market.\nGain 50% more credits for killing.\n{(IsSold ? "Already upgraded" : $"Price: {Price}")}";
         

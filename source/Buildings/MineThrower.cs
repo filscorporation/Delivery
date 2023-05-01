@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Steel;
 using SteelCustom.Enemies;
 
@@ -68,6 +67,8 @@ namespace SteelCustom.Buildings
                     yield break;
                 enemyUnit.TakeDamage(EXPLOSION_DAMAGE);
             }
+            
+            entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("mine_explosion.wav"));
         }
     }
 }

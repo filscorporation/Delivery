@@ -27,6 +27,7 @@ namespace SteelCustom.Effects
             Entity effect = ResourcesManager.GetAsepriteData("laser_effect.aseprite").CreateEntityFromAsepriteData();
             effect.Transformation.Position = new Vector3(0, 0, 2.5f);
             effect.GetComponent<Animator>().Play("Effect");
+            effect.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("laser.wav"));
             effect.Destroy(1.5f);
         }
     }

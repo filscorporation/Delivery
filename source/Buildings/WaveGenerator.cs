@@ -60,6 +60,7 @@ namespace SteelCustom.Buildings
             Entity entity = ResourcesManager.GetAsepriteData("wave_effect.aseprite").CreateEntityFromAsepriteData();
             entity.Transformation.Position = (Vector3)ShootPosition + new Vector3(1, 0, -1);
             entity.GetComponent<Animator>().Play("Effect");
+            entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("wave.wav"));
             entity.Destroy(0.8f);
 
             foreach (EnemyUnit enemyUnit in enemyUnits)

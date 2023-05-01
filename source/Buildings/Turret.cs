@@ -66,6 +66,8 @@ namespace SteelCustom.Buildings
             entity.AddComponent<Projectile>().Init(ShootPosition + new Vector2(distance - 5.0f / 32, 0), bulletDuration);
             entity.Destroy(bulletDuration);
             
+            Entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("shoot.wav"));
+            
             yield return new WaitForSeconds(bulletDuration);
             
             if (enemyUnit.Entity == null || enemyUnit.Entity.IsDestroyed())

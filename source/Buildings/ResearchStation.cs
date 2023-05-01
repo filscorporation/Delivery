@@ -19,8 +19,8 @@ namespace SteelCustom.Buildings
 
         protected override void UpdateBuilding()
         {
-            if (Input.IsKeyJustPressed(KeyCode.L)) // TODO: remove
-                DestroyBuilding();
+            /*if (Input.IsKeyJustPressed(KeyCode.L))
+                DestroyBuilding();*/
         }
 
         protected override void OnPlaced()

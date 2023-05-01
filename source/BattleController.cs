@@ -18,14 +18,13 @@ namespace SteelCustom
                     GameController.Instance.WinGame();
             }
             
-            // TODO: remove cheat
-            if (Input.IsKeyJustPressed(KeyCode.Q))
+            /*if (Input.IsKeyJustPressed(KeyCode.Q))
             {
                 foreach (EnemyUnit enemyUnit in EnemyController.Enemies)
                 {
                     enemyUnit.TakeDamage(999);
                 }
-            }
+            }*/
         }
 
         public void Init()

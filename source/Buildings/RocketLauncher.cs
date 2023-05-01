@@ -21,9 +21,8 @@ namespace SteelCustom.Buildings
         private float _searchTimer = 0;
         private Sprite _rocketSprite;
 
-        private const float SHOOT_SPEED = 6.0f;
+        private const float SHOOT_SPEED = 12.0f;
         private const int ROCKET_DAMAGE = 5;
-        private const float SHOOT_RANGE = 4.0f;
 
         protected override void UpdateBuilding()
         {

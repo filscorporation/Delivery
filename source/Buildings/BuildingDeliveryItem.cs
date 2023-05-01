@@ -12,7 +12,6 @@ namespace SteelCustom.Buildings
         private float _targetSpeed = FALL_SPEED;
         private float _timer = 0.0f;
 
-        private const float FALL_DAMAGE = 2;
         private const float FALL_SPEED = 3.0f;
         private const float GLIDE_SPEED = 0.5f;
         private const float SKY_HEIGHT = 3.0f;
@@ -77,9 +76,10 @@ namespace SteelCustom.Buildings
                 groundEffect.Transformation.Position = Transformation.Position;
                 groundEffect.GetComponent<Animator>().Play("Effect");
                 
-                groundEffect.Destroy(0.7f);
+                groundEffect.AddComponent<AudioSource>().Volume = 2.0f;
+                groundEffect.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("building_landing.wav"));
                 
-                // TODO: fall damage
+                groundEffect.Destroy(0.7f);
             }
         }
     }

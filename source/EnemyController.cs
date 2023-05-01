@@ -16,28 +16,34 @@ namespace SteelCustom
 
         private readonly LinkedList<EnemyUnit> _enemies = new LinkedList<EnemyUnit>();
         private List<Wave> _waves;
+        private List<Wave> _endlessWaves;
         private int _currentWave = 0;
+        private int _currentEndlessWave = 0;
         private bool _isAttacking = false;
         private float _attackProgress;
+        private float _endlessAttackProgress;
         private float _lastAttackTime;
+        private float _lastEndlessAttackTime;
         private float _attackLength;
 
         private const float FLY_HEIGHT = -0.75f;
 
         public override void OnUpdate()
         {
-            if (Input.IsKeyJustPressed(KeyCode.W)) // TODO: remove
+            /*if (Input.IsKeyJustPressed(KeyCode.W))
             {
                 _currentWave = _waves.Count;
                 _attackProgress = _attackLength;
                 AttackCompleted = true;
-            }
+            }*/
             
             if (!_isAttacking)
                 return;
             
             if (!AttackCompleted)
                 UpdateAttack();
+            else
+                UpdateEndlessAttack();
         }
 
         public void Init()
@@ -47,11 +53,6 @@ namespace SteelCustom
             _lastAttackTime = 0;
             _attackLength = _waves.Sum(w => w.Delay);
             _isAttacking = true;
-
-            SpawnUnit(EnemyType.Soldier);
-            SpawnUnit(EnemyType.Tank);
-            SpawnUnit(EnemyType.Runner);
-            SpawnUnit(EnemyType.Flying);
         }
 
         private void UpdateAttack()
@@ -72,6 +73,29 @@ namespace SteelCustom
                 {
                     AttackCompleted = true;
                     return;
+                }
+            }
+        }
+
+        private void UpdateEndlessAttack()
+        {
+            _endlessAttackProgress += Time.DeltaTime;
+
+            while (_endlessAttackProgress >= _lastEndlessAttackTime + _endlessWaves[_currentEndlessWave].Delay)
+            {
+                _lastEndlessAttackTime += _endlessWaves[_currentEndlessWave].Delay;
+
+                for (int i = 0; i < _endlessWaves[_currentEndlessWave].EnemyCount; i++)
+                {
+                    SpawnUnit(_endlessWaves[_currentEndlessWave].EnemyType);
+                }
+                
+                _currentEndlessWave++;
+                if (_currentEndlessWave >= _endlessWaves.Count)
+                {
+                    _currentEndlessWave = 0;
+                    _endlessAttackProgress = 0.0f;
+                    _lastEndlessAttackTime = 0.0f;
                 }
             }
         }
@@ -109,48 +133,80 @@ namespace SteelCustom
         {
             _waves = new List<Wave>
             {
-                new Wave(5, EnemyType.Soldier, 1),
-                new Wave(5, EnemyType.Soldier, 1),
-                new Wave(10, EnemyType.Soldier, 2),
-                new Wave(10, EnemyType.Soldier, 2),
-                new Wave(10, EnemyType.Soldier, 3),
-                
-                new Wave(10, EnemyType.Tank, 1),
-                new Wave(5, EnemyType.Runner, 1),
+                new Wave(10, EnemyType.Soldier, 1),
+                new Wave(15, EnemyType.Soldier, 1),
+                new Wave(15, EnemyType.Soldier, 1),
+                new Wave(15, EnemyType.Soldier, 2),
+                new Wave(15, EnemyType.Soldier, 2),
                 new Wave(15, EnemyType.Soldier, 3),
-                new Wave(10, EnemyType.Tank, 1),
-                new Wave(5, EnemyType.Runner, 3),
                 
-                new Wave(20, EnemyType.Soldier, 1),
-                new Wave(2, EnemyType.Soldier, 1),
-                new Wave(2, EnemyType.Soldier, 1),
-                new Wave(2, EnemyType.Soldier, 1),
-                new Wave(2, EnemyType.Soldier, 1),
-                new Wave(2, EnemyType.Soldier, 1),
-                new Wave(3, EnemyType.Tank, 1),
-                new Wave(3, EnemyType.Tank, 1),
+                new Wave(20, EnemyType.Tank, 1),
+                new Wave(20, EnemyType.Runner, 1),
+                new Wave(20, EnemyType.Soldier, 2),
+                new Wave(20, EnemyType.Soldier, 2),
+                new Wave(25, EnemyType.Tank, 1),
+                new Wave(15, EnemyType.Runner, 2),
+                new Wave(10, EnemyType.Soldier, 2),
+                new Wave(20, EnemyType.Tank, 1),
+                new Wave(10, EnemyType.Runner, 2),
+                
+                new Wave(20, EnemyType.Soldier, 2),
+                new Wave(4, EnemyType.Soldier, 1),
+                new Wave(4, EnemyType.Soldier, 1),
+                new Wave(4, EnemyType.Soldier, 1),
+                new Wave(4, EnemyType.Soldier, 1),
+                new Wave(4, EnemyType.Soldier, 1),
+                new Wave(10, EnemyType.Tank, 1),
+                new Wave(10, EnemyType.Tank, 1),
                 new Wave(5, EnemyType.Runner, 1),
                 new Wave(1, EnemyType.Runner, 1),
                 new Wave(1, EnemyType.Runner, 1),
                 
-                new Wave(20, EnemyType.Flying, 1),
-                new Wave(5, EnemyType.Tank, 1),
-                new Wave(5, EnemyType.Tank, 1),
+                new Wave(30, EnemyType.Flying, 1),
+                new Wave(10, EnemyType.Tank, 2),
+                new Wave(15, EnemyType.Runner, 1),
+                new Wave(10, EnemyType.Soldier, 5),
+                new Wave(10, EnemyType.Soldier, 5),
+                new Wave(10, EnemyType.Tank, 3),
+                new Wave(5, EnemyType.Runner, 4),
                 new Wave(5, EnemyType.Soldier, 3),
-                new Wave(5, EnemyType.Soldier, 1),
-                new Wave(1, EnemyType.Soldier, 1),
-                new Wave(1, EnemyType.Soldier, 1),
-                new Wave(1, EnemyType.Soldier, 1),
-                new Wave(1, EnemyType.Soldier, 1),
-                new Wave(1, EnemyType.Soldier, 1),
-                new Wave(5, EnemyType.Flying, 1),
-                new Wave(5, EnemyType.Flying, 1),
-                new Wave(5, EnemyType.Flying, 1),
-                new Wave(1, EnemyType.Runner, 1),
-                new Wave(1, EnemyType.Runner, 1),
-                new Wave(1, EnemyType.Runner, 1),
-                new Wave(5, EnemyType.Tank, 1),
-                new Wave(5, EnemyType.Tank, 1),
+                new Wave(10, EnemyType.Flying, 1),
+                new Wave(10, EnemyType.Tank, 2),
+                new Wave(10, EnemyType.Runner, 3),
+                
+                new Wave(10, EnemyType.Flying, 2),
+                new Wave(2, EnemyType.Flying, 2),
+                new Wave(10, EnemyType.Tank, 2),
+                new Wave(2, EnemyType.Tank, 2),
+                new Wave(10, EnemyType.Runner, 4),
+                new Wave(2, EnemyType.Runner, 4),
+                new Wave(2, EnemyType.Runner, 4),
+                new Wave(2, EnemyType.Runner, 4),
+                new Wave(5, EnemyType.Soldier, 8),
+                new Wave(5, EnemyType.Soldier, 8),
+                new Wave(5, EnemyType.Soldier, 8),
+                new Wave(7, EnemyType.Tank, 3),
+                new Wave(7, EnemyType.Tank, 3),
+                new Wave(7, EnemyType.Tank, 3),
+                new Wave(1, EnemyType.Runner, 2),
+                new Wave(1, EnemyType.Runner, 2),
+                new Wave(1, EnemyType.Runner, 2),
+                new Wave(1, EnemyType.Runner, 2),
+                new Wave(1, EnemyType.Runner, 2),
+                new Wave(1, EnemyType.Runner, 2),
+                new Wave(10, EnemyType.Flying, 6),
+                
+                new Wave(15, EnemyType.Runner, 1),
+            };
+
+            _endlessWaves = new List<Wave>
+            {
+                new Wave(10, EnemyType.Soldier, 15),
+                new Wave(10, EnemyType.Tank, 5),
+                new Wave(5, EnemyType.Soldier, 15),
+                new Wave(5, EnemyType.Flying, 5),
+                new Wave(10, EnemyType.Runner, 10),
+                new Wave(10, EnemyType.Tank, 8),
             };
         }
     }

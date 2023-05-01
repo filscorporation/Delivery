@@ -10,7 +10,7 @@ namespace SteelCustom
     {
         public event Action OnCreditsChanged;
 
-        public int Credits { get; private set; } = 500; // TODO: remove
+        public int Credits { get; private set; }
 
         public bool ResearchStationPlaced { get; set; } = false;
         public bool FirstTowerOrdered { get; private set; } = false;
@@ -98,6 +98,7 @@ namespace SteelCustom
             SpendCredits(upgrade.Price);
             
             upgrade.Apply();
+            Entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("upgrade.wav"));
 
             return true;
         }

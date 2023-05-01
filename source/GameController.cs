@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using Steel;
 using SteelCustom.UIElements;
 
@@ -10,7 +9,7 @@ namespace SteelCustom
     {
         public static GameController Instance;
         
-        public const float DEFAULT_VOLUME = 0.15f;
+        public const float DEFAULT_VOLUME = 0.25f;
         public static bool SoundOn { get; set; } = true;
         public const float MAP_SIZE = 320;
 
@@ -78,7 +77,7 @@ namespace SteelCustom
 
             if (GameState == GameState.Battle)
             {
-                if (!_shipUpgradeDialog && BattleController.EnemyController.CurrentWave > 3)
+                if (!_shipUpgradeDialog && BattleController.EnemyController.CurrentWave > 5)
                 {
                     StartCoroutine(ShowShipUpgradesCoroutine());
                     _shipUpgradeDialog = true;
@@ -116,7 +115,10 @@ namespace SteelCustom
         public void LoseGame()
         {
             if (_winGame)
+            {
+                ExitGame();
                 return;
+            }
             
             _loseGame = true;
             _changeState = true;
@@ -126,17 +128,11 @@ namespace SteelCustom
         {
             GameState = GameState.Intro;
             Log.LogInfo("Start Intro state");
-            
-            Camera.Main.Entity.GetComponent<AudioListener>().Volume = DEFAULT_VOLUME;
-            Entity backgroundMusic = new Entity();
-            AudioSource source = backgroundMusic.AddComponent<AudioSource>();
-            source.Loop = true;
-            //source.Play(ResourcesManager.GetAudioTrack("background_music.wav"));
-            source.Volume = 0.1f;
 
             new Entity("Environment").AddComponent<Environment>().Init();
 
             CameraController = Camera.Main.Entity.AddComponent<CameraController>();
+            CameraController.Init();
             CameraController.ToTopScene(true);
             
             UIController = new Entity("UI controller").AddComponent<UIController>();
@@ -268,9 +264,9 @@ namespace SteelCustom
             DialogController.ShowWinDialog();
             yield return new WaitWhile(() => DialogController.ShowingDialog);
             
-            yield return new WaitForSeconds(2.0f);
+            /*yield return new WaitForSeconds(2.0f);
             
-            Application.Quit();
+            Application.Quit();*/
         }
     }
 }

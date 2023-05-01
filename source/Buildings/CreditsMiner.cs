@@ -14,7 +14,7 @@ namespace SteelCustom.Buildings
 
         private float _miningTimer = MINING_SPEED;
 
-        private const float MINING_SPEED = 3.0f;
+        private const float MINING_SPEED = 5.0f;
         private const int MINING_GAIN = 1;
 
         private void UpdateMining()

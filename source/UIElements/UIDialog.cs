@@ -29,6 +29,13 @@ namespace SteelCustom.UIElements
             _text.TextOverflowMode = OverflowMode.WrapByWords;
             _text.TextAlignment = AlignmentType.TopLeft;
             _text.TextSize = 32;
+            
+            UIImage image = UI.CreateUIImage(ResourcesManager.GetImage("ui_portrait.aseprite"), "Portrait", Entity);
+            image.RectTransform.AnchorMin = new Vector2(0, 0);
+            image.RectTransform.AnchorMax = new Vector2(0, 0);
+            image.RectTransform.Pivot = new Vector2(0, 0);
+            image.RectTransform.Size = new Vector2(22 * K, 22 * K);
+            image.RectTransform.AnchoredPosition = new Vector2(2 * K, 2 * K);
         }
 
         public void SetText(string targetText)

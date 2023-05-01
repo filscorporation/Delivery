@@ -180,6 +180,7 @@ namespace SteelCustom.Enemies
             if (_target != null && !_target.Entity.IsDestroyed() && CanAttack(_target))
             {
                 _target.TakeDamage(this, Damage);
+                Entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack(MaxHealth >= 20 ? "big_hit.wav" : "small_hit.wav"));
             }
         }
 

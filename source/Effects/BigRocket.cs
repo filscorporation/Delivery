@@ -51,6 +51,7 @@ namespace SteelCustom.Effects
             Entity entity = ResourcesManager.GetAsepriteData("big_rocket_effect.aseprite").CreateEntityFromAsepriteData();
             entity.Transformation.Position = Transformation.Position + new Vector3(0.125f, 0.625f, 0.5f);
             entity.GetComponent<Animator>().Play("Effect");
+            entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("big_explosion.wav"));
             entity.Destroy(0.5f);
         }
     }

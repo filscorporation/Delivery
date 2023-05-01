@@ -54,6 +54,8 @@ namespace SteelCustom.Buildings
             Entity entity = ResourcesManager.GetAsepriteData("small_rocket_effect.aseprite").CreateEntityFromAsepriteData();
             entity.Transformation.Position = Transformation.Position + new Vector3(0, 0, 0.5f);
             entity.GetComponent<Animator>().Play("Effect");
+            entity.AddComponent<AudioSource>().Volume = 0.7f;
+            entity.AddComponent<AudioSource>().Play(ResourcesManager.GetAudioTrack("small_explosion.wav"));
             entity.Destroy(0.5f);
         }
     }
